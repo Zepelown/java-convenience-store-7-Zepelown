@@ -1,6 +1,5 @@
 package store.data.repository;
 
-import store.data.entity.Product;
 import store.data.entity.Promotion;
 
 import java.io.BufferedReader;
@@ -8,7 +7,7 @@ import java.io.IOException;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class StorePromotionRepository implements StoreRepository{
+public class StorePromotionRepository implements StoreRepository {
     private final String PROMOTION_FILE_NAME = "promotions.md";
 
     private List<Promotion> promotions;
@@ -17,7 +16,7 @@ public class StorePromotionRepository implements StoreRepository{
         promotions = loadPromotionsFromFile();
     }
 
-    public List<Promotion> loadPromotions(){
+    public List<Promotion> loadPromotions() {
         return promotions;
     }
 
@@ -29,6 +28,7 @@ public class StorePromotionRepository implements StoreRepository{
                     .collect(Collectors.toList());
         }
     }
+
     private Promotion parsePromotionLine(String line) {
         String[] parts = line.split(FILE_DELIMITER);
         String name = parts[0];

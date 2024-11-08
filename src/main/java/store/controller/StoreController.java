@@ -2,7 +2,7 @@ package store.controller;
 
 import store.dto.ProductDto;
 import store.model.PurchaseProduct;
-import store.service.StoreBuyingService;
+import store.model.PurchaseProductFactory;
 import store.service.StoreProductService;
 import store.view.StoreInputView;
 import store.view.StoreOutputView;
@@ -14,7 +14,7 @@ public class StoreController {
     private final StoreInputView storeInputView = new StoreInputView();
     private final StoreOutputView storeOutputView = new StoreOutputView();
     private StoreProductService storeProductService;
-    private final StoreBuyingService storeBuyingService = new StoreBuyingService();
+    private final PurchaseProductFactory purchaseProductFactory = new PurchaseProductFactory();
 
     public StoreController() {
         try{
@@ -25,26 +25,17 @@ public class StoreController {
     }
     public void start() {
         storeOutputView.printProductStockNotification();
-        List<ProductDto> products = loadProductStock();
+        List<ProductDto> products = storeProductService.loadProductStock();
         storeOutputView.printProductStock(products);
 
         List<PurchaseProduct> productsToBuy = getProductsToBuy();
-    }
-
-    private List<ProductDto> loadProductStock() {
-        try {
-            return storeProductService.loadProductStock();
-        } catch (IOException e) {
-            System.out.println("[ERROR]재고 로딩 실패");
-        }
-        return null;
     }
 
     private List<PurchaseProduct> getProductsToBuy() {
         while (true) {
             try {
                 String userInput = storeInputView.getProductsToBuy();
-                return storeBuyingService.getProductsToBuy(userInput);
+                return purchaseProductFactory.parsePurchaseProduct(userInput);
             } catch (IllegalArgumentException e) {
                 storeOutputView.printErrorMessage(e.getMessage());
             }

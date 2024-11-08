@@ -1,12 +1,12 @@
-package store.service;
+package store.model;
 
 import store.model.PurchaseProduct;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class StoreBuyingService {
-    public List<PurchaseProduct> getProductsToBuy(String input) {
+public class PurchaseProductFactory {
+    public List<PurchaseProduct> parsePurchaseProduct(String input) {
         List<String> productStrings = splitProducts(input);
         return parseProducts(productStrings);
     }

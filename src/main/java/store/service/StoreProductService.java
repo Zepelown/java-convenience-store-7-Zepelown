@@ -15,7 +15,7 @@ public class StoreProductService {
 
     }
 
-    public List<ProductDto> loadProductStock() throws IOException {
+    public List<ProductDto> loadProductStock() {
         return storeProductRepository.loadProductStock().stream()
                 .map(Product::toDto)
                 .collect(Collectors.toList());

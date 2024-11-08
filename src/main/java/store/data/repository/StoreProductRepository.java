@@ -4,11 +4,10 @@ import store.data.entity.Product;
 
 import java.io.BufferedReader;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class StoreProductRepository implements StoreRepository{
+public class StoreProductRepository implements StoreRepository {
     private final String PRODUCT_FILE_NAME = "products.md";
 
     private List<Product> productStock;
@@ -17,7 +16,7 @@ public class StoreProductRepository implements StoreRepository{
         productStock = loadProductsFromFile();
     }
 
-    public List<Product> loadProductStock(){
+    public List<Product> loadProductStock() {
         return productStock;
     }
 
