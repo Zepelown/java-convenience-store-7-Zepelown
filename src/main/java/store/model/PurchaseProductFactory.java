@@ -1,5 +1,6 @@
 package store.model;
 
+import store.exception.ErrorMessage;
 import store.model.PurchaseProduct;
 
 import java.util.ArrayList;
@@ -34,6 +35,9 @@ public class PurchaseProductFactory {
 
     private PurchaseProduct parseProduct(String productString) {
         String[] parts = productString.split("-");
+        if (parts.length != 2){
+            throw new IllegalArgumentException(ErrorMessage.INVALID_BUYING_PRODUCT_INPUT_FORMAT.getErrorMessage());
+        }
         String name = parts[0];
         String quantity = parts[1];
         return new PurchaseProduct(name, quantity);
