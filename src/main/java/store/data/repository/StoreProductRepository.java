@@ -7,6 +7,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 public class StoreProductRepository implements StoreRepository {
@@ -21,15 +22,14 @@ public class StoreProductRepository implements StoreRepository {
     public List<Product> loadProductStock() {
         return productStock;
     }
-
-    public List<Product> findPurchasableProducts(PurchaseProduct purchaseProduct){
+    public Optional<List<Product>> findPurchasableProductsByName(String name){
         ArrayList<Product> purchasableProducts = new ArrayList<>();
         for (Product stock : productStock){
-            if (stock.canPurchase(purchaseProduct)){
+            if (stock.equalsName(name)){
                 purchasableProducts.add(stock);
             }
         }
-        return purchasableProducts;
+        return Optional.of(purchasableProducts);
     }
 
     private List<Product> loadProductsFromFile() throws IOException {

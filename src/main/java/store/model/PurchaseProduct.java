@@ -22,7 +22,7 @@ public class PurchaseProduct {
     }
 
     private void validate() {
-        ModelValidator.validateString(name, ErrorMessage.INVALID_BUYING_PRODUCT_NAME.getErrorMessage());
+        ModelValidator.validateString(name, ErrorMessage.INVALID_BUYING_PRODUCT_INPUT_FORMAT.getErrorMessage());
         ModelValidator.validateInt(quantity, ErrorMessage.INVALID_BUYING_PRODUCT_INPUT_FORMAT.getErrorMessage());
     }
 
