@@ -1,5 +1,7 @@
 package store.data.entity;
 
+import store.util.EntityValidator;
+
 import java.time.LocalDate;
 
 public class Promotion {
@@ -9,12 +11,12 @@ public class Promotion {
     private LocalDate startDate;
     private LocalDate endDate;
 
-    public Promotion(String name, int buy, int get, LocalDate startDate, LocalDate endDate) {
+    public Promotion(String name, String buy, String get, String startDate, String endDate) {
         this.name = name;
-        this.buy = buy;
-        this.get = get;
-        this.startDate = startDate;
-        this.endDate = endDate;
+        this.buy = EntityValidator.parseInt(buy);
+        this.get = EntityValidator.parseInt(get);
+        this.startDate = EntityValidator.parseDate(startDate);
+        this.endDate = EntityValidator.parseDate(endDate);
     }
 
     public String getName() {
@@ -35,5 +37,11 @@ public class Promotion {
 
     public LocalDate getEndDate() {
         return endDate;
+    }
+
+    public void validate() {
+        EntityValidator.validateString(name);
+        EntityValidator.validateInt(buy);
+        EntityValidator.validateInt(get);
     }
 }

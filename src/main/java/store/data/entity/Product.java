@@ -1,15 +1,20 @@
 package store.data.entity;
 
+import store.util.EntityValidator;
+
+import java.io.IOException;
+
 public class Product {
     private String name;
     private int price;
     private int quantity;
     private String promotion;
-    public Product(String name, int price, int quantity, String promotion) {
+    public Product(String name, String price, String quantity, String promotion) {
         this.name = name;
-        this.price = price;
-        this.quantity = quantity;
+        this.price = EntityValidator.parseInt(price);
+        this.quantity = EntityValidator.parseInt(quantity);
         this.promotion = promotion;
+        validate();
     }
 
     public String getName() {
@@ -26,5 +31,12 @@ public class Product {
 
     public String getPromotion() {
         return promotion;
+    }
+
+    public void validate()  {
+        EntityValidator.validateString(name);
+        EntityValidator.validateInt(price);
+        EntityValidator.validateInt(quantity);
+        EntityValidator.validateString(promotion);
     }
 }
