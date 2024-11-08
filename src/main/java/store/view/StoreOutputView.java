@@ -10,6 +10,7 @@ public class StoreOutputView {
     private final DecimalFormat decimalFormat = new DecimalFormat("#,##0원");
     private final String PRODUCT_STOCK_NOTIFICATION = "안녕하세요. W편의점입니다.\n" +
             "현재 보유하고 있는 상품입니다.";
+    private final String ERROR_MESSAGE_PREFIX = "[ERROR]";
 
     public void printProductStockNotification() {
         System.out.println(PRODUCT_STOCK_NOTIFICATION);
@@ -26,5 +27,8 @@ public class StoreOutputView {
              result.append(" ").append(promotion);
             System.out.println(result);
          }
+    }
+    public void printErrorMessage(String errorMessage){
+        System.out.println(ERROR_MESSAGE_PREFIX + errorMessage);
     }
 }
