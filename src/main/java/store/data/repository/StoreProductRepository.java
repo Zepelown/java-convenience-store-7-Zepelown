@@ -1,9 +1,11 @@
 package store.data.repository;
 
 import store.data.entity.Product;
+import store.model.PurchaseProduct;
 
 import java.io.BufferedReader;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -18,6 +20,16 @@ public class StoreProductRepository implements StoreRepository {
 
     public List<Product> loadProductStock() {
         return productStock;
+    }
+
+    public List<Product> findPurchasableProducts(PurchaseProduct purchaseProduct){
+        ArrayList<Product> purchasableProducts = new ArrayList<>();
+        for (Product stock : productStock){
+            if (stock.canPurchase(purchaseProduct)){
+                purchasableProducts.add(stock);
+            }
+        }
+        return purchasableProducts;
     }
 
     private List<Product> loadProductsFromFile() throws IOException {

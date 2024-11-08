@@ -1,34 +1,43 @@
 package store.controller;
 
+import store.data.repository.StoreProductRepository;
+import store.data.repository.StorePromotionRepository;
 import store.dto.ProductDto;
 import store.model.PurchaseProduct;
 import store.model.PurchaseProductFactory;
+import store.service.StoreBuyingService;
 import store.service.StoreProductService;
 import store.view.StoreInputView;
 import store.view.StoreOutputView;
 
-import java.io.IOException;
 import java.util.List;
 
 public class StoreController {
-    private final StoreInputView storeInputView = new StoreInputView();
-    private final StoreOutputView storeOutputView = new StoreOutputView();
-    private StoreProductService storeProductService;
+    private final StoreProductRepository storeProductRepository;
+    private final StorePromotionRepository storePromotionRepository;
+    private final StoreInputView storeInputView;
+    private final StoreOutputView storeOutputView;
     private final PurchaseProductFactory purchaseProductFactory = new PurchaseProductFactory();
+    private final StoreProductService storeProductService;
+    private final StoreBuyingService storeBuyingService;
 
-    public StoreController() {
-        try{
-            storeProductService = new StoreProductService();
-        } catch (IOException e) {
-            storeOutputView.printErrorMessage(e.getMessage());
-        }
+    public StoreController(StoreProductRepository storeProductRepository, StorePromotionRepository storePromotionRepository, StoreInputView storeInputView, StoreOutputView storeOutputView) {
+        this.storeProductRepository = storeProductRepository;
+        this.storePromotionRepository = storePromotionRepository;
+        this.storeInputView = storeInputView;
+        this.storeOutputView = storeOutputView;
+
+        storeProductService = new StoreProductService(storeProductRepository);
+        storeBuyingService = new StoreBuyingService(storeProductRepository, storePromotionRepository);
     }
+
     public void start() {
         storeOutputView.printProductStockNotification();
         List<ProductDto> products = storeProductService.loadProductStock();
         storeOutputView.printProductStock(products);
 
         List<PurchaseProduct> productsToBuy = getProductsToBuy();
+        storeBuyingService.buyProducts(productsToBuy);
     }
 
     private List<PurchaseProduct> getProductsToBuy() {

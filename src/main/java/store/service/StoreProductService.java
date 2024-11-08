@@ -4,16 +4,16 @@ import store.data.entity.Product;
 import store.data.repository.StoreProductRepository;
 import store.dto.ProductDto;
 
-import java.io.IOException;
 import java.util.List;
 import java.util.stream.Collectors;
 
 public class StoreProductService {
-    private StoreProductRepository storeProductRepository = new StoreProductRepository();
+    private final StoreProductRepository storeProductRepository;
 
-    public StoreProductService() throws IOException {
-
+    public StoreProductService(StoreProductRepository storeProductRepository) {
+        this.storeProductRepository = storeProductRepository;
     }
+
 
     public List<ProductDto> loadProductStock() {
         return storeProductRepository.loadProductStock().stream()

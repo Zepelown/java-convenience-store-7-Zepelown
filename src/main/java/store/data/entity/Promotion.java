@@ -39,7 +39,7 @@ public class Promotion {
         return endDate;
     }
 
-    public void validate() {
+    private void validate() {
         EntityValidator.validateString(name);
         EntityValidator.validateInt(buy);
         EntityValidator.validateInt(get);

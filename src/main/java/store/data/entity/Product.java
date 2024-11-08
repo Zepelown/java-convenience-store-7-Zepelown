@@ -1,9 +1,11 @@
 package store.data.entity;
 
+import camp.nextstep.edu.missionutils.DateTimes;
 import store.dto.ProductDto;
+import store.model.PurchaseProduct;
 import store.util.EntityValidator;
 
-import java.io.IOException;
+import java.time.LocalDateTime;
 
 public class Product {
     private String name;
@@ -33,15 +35,28 @@ public class Product {
     public String getPromotion() {
         return promotion;
     }
+    public ProductDto toDto(){
+        return new ProductDto(name,price,quantity,promotion);
+    }
 
-    public void validate()  {
+    public boolean canPurchase(PurchaseProduct purchaseProduct){
+        if (name.equals(purchaseProduct.getName()) && purchaseProduct.getQuantity() < quantity){
+            return true;
+        }
+        return false;
+    }
+
+    public boolean hasPromotion(){
+        if (promotion.equals("null")){
+            return false;
+        }
+        return true;
+    }
+
+    private void validate()  {
         EntityValidator.validateString(name);
         EntityValidator.validateInt(price);
         EntityValidator.validateInt(quantity);
         EntityValidator.validateString(promotion);
-    }
-
-    public ProductDto toDto(){
-        return new ProductDto(name,price,quantity,promotion);
     }
 }

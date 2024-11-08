@@ -13,6 +13,14 @@ public class PurchaseProduct {
         validate();
     }
 
+    public String getName() {
+        return name;
+    }
+
+    public int getQuantity() {
+        return quantity;
+    }
+
     private void validate() {
         ModelValidator.validateString(name, ErrorMessage.INVALID_BUYING_PRODUCT_NAME.getErrorMessage());
         ModelValidator.validateInt(quantity, ErrorMessage.INVALID_BUYING_PRODUCT_INPUT_FORMAT.getErrorMessage());
