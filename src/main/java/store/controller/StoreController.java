@@ -1,6 +1,7 @@
 package store.controller;
 
 import store.data.entity.Product;
+import store.dto.ProductDto;
 import store.service.StoreDataService;
 import store.view.StoreOutputView;
 
@@ -12,13 +13,15 @@ public class StoreController {
     private final StoreDataService storeDataService = new StoreDataService();
     public void start(){
         storeOutputView.printProductStockNotification();
-        initStoreSetting();
+        List<ProductDto> products = loadProductStock();
+        storeOutputView.printProductStock(products);
     }
-    private void initStoreSetting(){
-        try{
-            List<Product> products = storeDataService.loadProductStock();
-        } catch (IOException e){
+    private List<ProductDto> loadProductStock() {
+        try {
+            return storeDataService.loadProductStock();
+        } catch (IOException e) {
             System.out.println("[ERROR]재고 로딩 실패");
         }
+        return null;
     }
 }

@@ -1,5 +1,6 @@
 package store.data.entity;
 
+import store.dto.ProductDto;
 import store.util.EntityValidator;
 
 import java.io.IOException;
@@ -38,5 +39,9 @@ public class Product {
         EntityValidator.validateInt(price);
         EntityValidator.validateInt(quantity);
         EntityValidator.validateString(promotion);
+    }
+
+    public ProductDto toDto(){
+        return new ProductDto(name,price,quantity,promotion);
     }
 }
