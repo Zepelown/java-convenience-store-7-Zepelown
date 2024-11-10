@@ -1,6 +1,5 @@
 package store.data.repository;
 
-import store.data.entity.ProductEntity;
 import store.data.entity.PromotionEntity;
 
 import java.io.BufferedReader;
@@ -17,10 +16,12 @@ public class StorePromotionRepository implements StoreRepository {
     public StorePromotionRepository() throws IOException {
         promotions = loadPromotionsFromFile();
     }
-    public Map<String, PromotionEntity> loadPromotions(){
+
+    public Map<String, PromotionEntity> loadPromotions() {
         return promotions;
     }
-    public Optional<PromotionEntity> loadPromotion(String promotionName){
+
+    public Optional<PromotionEntity> loadPromotion(String promotionName) {
         return Optional.ofNullable(promotions.get(promotionName));
     }
 

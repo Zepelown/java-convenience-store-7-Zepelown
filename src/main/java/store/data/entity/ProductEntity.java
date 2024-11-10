@@ -38,30 +38,9 @@ public class ProductEntity {
     public ProductDto toDto() {
         return new ProductDto(name, price, quantity, promotion);
     }
-    public Product toProduct(Promotion promotion){
-        return new Product(name,price,quantity,promotion);
-    }
 
-    public boolean equalsName(String name) {
-        if (name.equals(this.name)) {
-            return true;
-        }
-        return false;
-    }
-
-    public boolean isStockAvailable(int quantity) {
-        if (this.quantity >= quantity) {
-            return true;
-        }
-        return false;
-    }
-
-
-    public boolean hasPromotion() {
-        if (promotion.equals("null")) {
-            return false;
-        }
-        return true;
+    public Product toProduct(Promotion promotion) {
+        return new Product(name, price, quantity, promotion);
     }
 
     private void validate() {

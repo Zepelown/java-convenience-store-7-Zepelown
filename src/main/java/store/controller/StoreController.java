@@ -34,7 +34,7 @@ public class StoreController {
         storeOutputView.printProductStock(products);
 
         List<PurchaseProduct> productsToBuy = getProductsToBuy();
-        storeStockService.getPurchasableProducts(productsToBuy);
+        storeStockService.buyProducts(productsToBuy);
     }
 
     private List<PurchaseProduct> getProductsToBuy() {
