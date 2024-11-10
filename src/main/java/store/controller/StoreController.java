@@ -85,4 +85,11 @@ public class StoreController {
             }
         }
     }
+    private void checkPromotionQuantityOverStock(PurchaseProduct purchaseProduct,SeparatedProducts separatedProducts){
+        try {
+            storeStockService.checkPromotionQuantityOverStock(purchaseProduct,separatedProducts);
+        } catch (IllegalArgumentException e){
+
+        }
+    }
 }

@@ -32,9 +32,12 @@ public class StoreStockService {
                 .collect(Collectors.toList());
     }
 
+
+
     public SeparatedProducts separatePromotion(PurchaseProduct purchaseProduct, List<Product> checkedProductStock) {
         Product promotionProduct = null;
         ArrayList<Product> nonPromotionProducts = new ArrayList<>();
+        int totalStock = 0;
 
         for (Product product : checkedProductStock) {
             if (product.isPromotionActive()){
@@ -42,8 +45,9 @@ public class StoreStockService {
                 continue;
             }
             nonPromotionProducts.add(product);
+            totalStock += product.getStock();
         }
-        return new SeparatedProducts(promotionProduct, nonPromotionProducts);
+        return new SeparatedProducts(promotionProduct, nonPromotionProducts,totalStock);
     }
 
     public void checkInsufficientBonusPromotionQuantity(PurchaseProduct purchaseProduct,SeparatedProducts separatedProducts){
@@ -52,6 +56,14 @@ public class StoreStockService {
             return;
         }
         promotionProduct.checkInsufficientBonusPromotionQuantity(purchaseProduct.getQuantity());
+    }
+
+    public void checkPromotionQuantityOverStock(PurchaseProduct purchaseProduct, SeparatedProducts separatedProducts){
+        Product promotionProduct = separatedProducts.getPromotionProduct();
+        if (promotionProduct == null){
+            return;
+        }
+        promotionProduct.checkPromotionQuantityOverStock(purchaseProduct.getQuantity(),separatedProducts.getTotalStock());
     }
 
     public List<Product> getSameProductNameStocks(PurchaseProduct purchaseProduct) {

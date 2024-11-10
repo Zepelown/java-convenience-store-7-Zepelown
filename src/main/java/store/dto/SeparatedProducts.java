@@ -6,11 +6,14 @@ import java.util.ArrayList;
 
 public class SeparatedProducts {
     private final Product promotionProduct;
-    private final ArrayList<Product> nonPromotionProducts ;
+    private final ArrayList<Product> nonPromotionProducts;
 
-    public SeparatedProducts(Product promotionProduct, ArrayList<Product> nonPromotionProducts) {
+    private final int totalStock;
+
+    public SeparatedProducts(Product promotionProduct, ArrayList<Product> nonPromotionProducts, int totalStock) {
         this.promotionProduct = promotionProduct;
         this.nonPromotionProducts = nonPromotionProducts;
+        this.totalStock = totalStock;
     }
 
     public Product getPromotionProduct() {
@@ -19,5 +22,9 @@ public class SeparatedProducts {
 
     public ArrayList<Product> getNonPromotionProducts() {
         return nonPromotionProducts;
+    }
+
+    public int getTotalStock() {
+        return totalStock;
     }
 }
