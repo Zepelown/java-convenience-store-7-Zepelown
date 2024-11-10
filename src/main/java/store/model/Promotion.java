@@ -23,6 +23,9 @@ public class Promotion {
     }
 
     public boolean isPromotionApplicable() {
+        if (startDate == null || endDate == null) {
+            return false;
+        }
         LocalDateTime now = DateTimes.now();
         LocalDateTime start = startDate.atStartOfDay();
         LocalDateTime end = endDate.atTime(23, 59, 59);

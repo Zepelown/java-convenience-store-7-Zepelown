@@ -34,7 +34,7 @@ public class StoreStockService {
 
     public SeparatedProducts separatePromotion(PurchaseProduct purchaseProduct, List<Product> checkedProductStock) {
         Product promotionProduct = null;
-        ArrayList<Product> nonPromotionProducts = null;
+        ArrayList<Product> nonPromotionProducts = new ArrayList<>();
 
         for (Product product : checkedProductStock) {
             if (product.isPromotionActive()){
@@ -70,7 +70,7 @@ public class StoreStockService {
 
     public List<Product> checkProductStock(PurchaseProduct purchaseProduct, List<Product> sameProductNameStocks) {
         List<Product> products = sameProductNameStocks.stream()
-                .filter(it -> !it.canPurchase(purchaseProduct.getQuantity()))
+                .filter(it -> it.canPurchase(purchaseProduct.getQuantity()))
                 .collect(Collectors.toList());
         if (products.isEmpty()) {
             throw new IllegalArgumentException(ErrorMessage.EXCEEDS_STOCK_QUANTITY.getErrorMessage());

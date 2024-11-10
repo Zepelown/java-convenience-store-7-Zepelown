@@ -36,12 +36,12 @@ public class StoreController {
         storeOutputView.printProductStock(products);
 
         List<PurchaseProduct> productsToBuy = getProductsToBuy();
+
         for (PurchaseProduct purchaseProduct : productsToBuy){
-            List<Product> sameProductNameStocks = storeStockService.getSameProductNameStocks(purchaseProduct);
-            List<Product> checkedProductStock = storeStockService.checkProductStock(purchaseProduct, sameProductNameStocks);
-            SeparatedProducts separatedProducts = storeStockService.separatePromotion(purchaseProduct,checkedProductStock);
-            storeStockService.checkInsufficientBonusPromotionQuantity(purchaseProduct,separatedProducts);
+            SeparatedProducts separatedProducts = getPurchasableProducts(purchaseProduct);
+            checkInsufficientBonusPromotionQuantity(purchaseProduct,separatedProducts);
         }
+
     }
 
     private List<PurchaseProduct> getProductsToBuy() {
@@ -51,7 +51,26 @@ public class StoreController {
                 return purchaseProductFactory.parsePurchaseProduct(userInput);
             } catch (IllegalArgumentException e) {
                 storeOutputView.printErrorMessage(e.getMessage());
+                getProductsToBuy();
             }
+        }
+    }
+    private SeparatedProducts getPurchasableProducts(PurchaseProduct purchaseProduct){
+        while (true){
+            try {
+                List<Product> sameProductNameStocks = storeStockService.getSameProductNameStocks(purchaseProduct);
+                List<Product> checkedProductStock = storeStockService.checkProductStock(purchaseProduct, sameProductNameStocks);
+                return storeStockService.separatePromotion(purchaseProduct,checkedProductStock);
+            } catch (IllegalArgumentException e){
+                storeOutputView.printErrorMessage(e.getMessage());
+                getProductsToBuy();
+            }
+        }
+    }
+    private void checkInsufficientBonusPromotionQuantity(PurchaseProduct purchaseProduct,SeparatedProducts separatedProducts){
+        try {
+            storeStockService.checkInsufficientBonusPromotionQuantity(purchaseProduct,separatedProducts);
+        } catch (IllegalArgumentException e){
         }
     }
 }
