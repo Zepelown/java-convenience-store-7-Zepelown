@@ -65,8 +65,9 @@ public class StoreController {
         while (true) {
             try {
                 List<Product> sameProductNameStocks = storeStockService.getSameProductNameStocks(purchaseProduct);
-                List<Product> checkedProductStock = storeStockService.checkProductStock(purchaseProduct, sameProductNameStocks);
-                return storeStockService.separatePromotion(purchaseProduct, checkedProductStock);
+                PromotionProductGroup promotionProductGroup = storeStockService.separatePromotion(sameProductNameStocks);
+                storeStockService.checkProductStock(purchaseProduct, promotionProductGroup);
+                return promotionProductGroup;
             } catch (IllegalArgumentException e) {
                 storeOutputView.printErrorMessage(e.getMessage());
                 getProductsToBuy();

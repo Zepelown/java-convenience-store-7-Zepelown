@@ -20,7 +20,7 @@ public class Product {
         this.promotion = promotion;
     }
 
-    public boolean canPurchase(int quantity){
+    public boolean canPurchase(int quantity, int totalQuantity){
         if (stock < quantity){
             throw new IllegalArgumentException(ErrorMessage.EXCEEDS_STOCK_QUANTITY.getErrorMessage());
         }

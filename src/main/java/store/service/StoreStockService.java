@@ -36,7 +36,7 @@ public class StoreStockService {
     }
 
 
-    public PromotionProductGroup separatePromotion(PurchaseProduct purchaseProduct, List<Product> checkedProductStock) {
+    public PromotionProductGroup separatePromotion(List<Product> checkedProductStock) {
         Product promotionProduct = null;
         ArrayList<Product> nonPromotionProducts = new ArrayList<>();
         int totalStock = 0;
@@ -88,14 +88,10 @@ public class StoreStockService {
         return purchasableProducts;
     }
 
-    public List<Product> checkProductStock(PurchaseProduct purchaseProduct, List<Product> sameProductNameStocks) {
-        List<Product> products = sameProductNameStocks.stream()
-                .filter(it -> it.canPurchase(purchaseProduct.getQuantity()))
-                .collect(Collectors.toList());
-        if (products.isEmpty()) {
+    public void checkProductStock(PurchaseProduct purchaseProduct, PromotionProductGroup promotionProductGroup) {
+        if (promotionProductGroup.getTotalStock() < purchaseProduct.getQuantity()){
             throw new IllegalArgumentException(ErrorMessage.EXCEEDS_STOCK_QUANTITY.getErrorMessage());
         }
-        return products;
     }
 
     private void initStockSetting() {
