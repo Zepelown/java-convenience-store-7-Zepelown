@@ -4,7 +4,7 @@ import store.data.entity.ProductEntity;
 import store.data.repository.StoreProductRepository;
 import store.data.repository.StorePromotionRepository;
 import store.dto.ProductDto;
-import store.dto.SeparatedProducts;
+import store.dto.PromotionProductGroup;
 import store.exception.ErrorMessage;
 import store.model.Product;
 import store.model.Promotion;
@@ -34,7 +34,7 @@ public class StoreStockService {
 
 
 
-    public SeparatedProducts separatePromotion(PurchaseProduct purchaseProduct, List<Product> checkedProductStock) {
+    public PromotionProductGroup separatePromotion(PurchaseProduct purchaseProduct, List<Product> checkedProductStock) {
         Product promotionProduct = null;
         ArrayList<Product> nonPromotionProducts = new ArrayList<>();
         int totalStock = 0;
@@ -47,23 +47,23 @@ public class StoreStockService {
             nonPromotionProducts.add(product);
             totalStock += product.getStock();
         }
-        return new SeparatedProducts(promotionProduct, nonPromotionProducts,totalStock);
+        return new PromotionProductGroup(promotionProduct, nonPromotionProducts,totalStock);
     }
 
-    public void checkInsufficientBonusPromotionQuantity(PurchaseProduct purchaseProduct,SeparatedProducts separatedProducts){
-        Product promotionProduct = separatedProducts.getPromotionProduct();
+    public void checkInsufficientBonusPromotionQuantity(PurchaseProduct purchaseProduct, PromotionProductGroup promotionProductGroup){
+        Product promotionProduct = promotionProductGroup.getPromotionProduct();
         if (promotionProduct == null){
             return;
         }
         promotionProduct.checkInsufficientBonusPromotionQuantity(purchaseProduct.getQuantity());
     }
 
-    public void checkPromotionQuantityOverStock(PurchaseProduct purchaseProduct, SeparatedProducts separatedProducts){
-        Product promotionProduct = separatedProducts.getPromotionProduct();
+    public void checkPromotionQuantityOverStock(PurchaseProduct purchaseProduct, PromotionProductGroup promotionProductGroup){
+        Product promotionProduct = promotionProductGroup.getPromotionProduct();
         if (promotionProduct == null){
             return;
         }
-        promotionProduct.checkPromotionQuantityOverStock(purchaseProduct.getQuantity(),separatedProducts.getTotalStock());
+        promotionProduct.checkPromotionQuantityOverStock(purchaseProduct.getQuantity(), promotionProductGroup.getTotalStock());
     }
 
     public List<Product> getSameProductNameStocks(PurchaseProduct purchaseProduct) {

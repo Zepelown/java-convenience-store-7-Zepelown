@@ -3,7 +3,7 @@ package store.controller;
 import store.data.repository.StoreProductRepository;
 import store.data.repository.StorePromotionRepository;
 import store.dto.ProductDto;
-import store.dto.SeparatedProducts;
+import store.dto.PromotionProductGroup;
 import store.model.Product;
 import store.model.PurchaseProduct;
 import store.model.PurchaseProductFactory;
@@ -39,8 +39,8 @@ public class StoreController {
         List<PurchaseProduct> productsToBuy = getProductsToBuy();
 
         for (PurchaseProduct purchaseProduct : productsToBuy){
-            SeparatedProducts separatedProducts = getPurchasableProducts(purchaseProduct);
-            checkInsufficientBonusPromotionQuantity(purchaseProduct,separatedProducts);
+            PromotionProductGroup promotionProductGroup = getPurchasableProducts(purchaseProduct);
+            checkInsufficientBonusPromotionQuantity(purchaseProduct, promotionProductGroup);
         }
 
     }
@@ -56,7 +56,7 @@ public class StoreController {
             }
         }
     }
-    private SeparatedProducts getPurchasableProducts(PurchaseProduct purchaseProduct){
+    private PromotionProductGroup getPurchasableProducts(PurchaseProduct purchaseProduct){
         while (true){
             try {
                 List<Product> sameProductNameStocks = storeStockService.getSameProductNameStocks(purchaseProduct);
@@ -68,9 +68,9 @@ public class StoreController {
             }
         }
     }
-    private void checkInsufficientBonusPromotionQuantity(PurchaseProduct purchaseProduct,SeparatedProducts separatedProducts){
+    private void checkInsufficientBonusPromotionQuantity(PurchaseProduct purchaseProduct, PromotionProductGroup promotionProductGroup){
         try {
-            storeStockService.checkInsufficientBonusPromotionQuantity(purchaseProduct,separatedProducts);
+            storeStockService.checkInsufficientBonusPromotionQuantity(purchaseProduct, promotionProductGroup);
         } catch (IllegalArgumentException e){
             getInsufficientBonusPromotionQuantity(e.getMessage());
         }
@@ -85,9 +85,9 @@ public class StoreController {
             }
         }
     }
-    private void checkPromotionQuantityOverStock(PurchaseProduct purchaseProduct,SeparatedProducts separatedProducts){
+    private void checkPromotionQuantityOverStock(PurchaseProduct purchaseProduct, PromotionProductGroup promotionProductGroup){
         try {
-            storeStockService.checkPromotionQuantityOverStock(purchaseProduct,separatedProducts);
+            storeStockService.checkPromotionQuantityOverStock(purchaseProduct, promotionProductGroup);
         } catch (IllegalArgumentException e){
 
         }

@@ -4,13 +4,13 @@ import store.model.Product;
 
 import java.util.ArrayList;
 
-public class SeparatedProducts {
+public class PromotionProductGroup {
     private final Product promotionProduct;
     private final ArrayList<Product> nonPromotionProducts;
 
     private final int totalStock;
 
-    public SeparatedProducts(Product promotionProduct, ArrayList<Product> nonPromotionProducts, int totalStock) {
+    public PromotionProductGroup(Product promotionProduct, ArrayList<Product> nonPromotionProducts, int totalStock) {
         this.promotionProduct = promotionProduct;
         this.nonPromotionProducts = nonPromotionProducts;
         this.totalStock = totalStock;
