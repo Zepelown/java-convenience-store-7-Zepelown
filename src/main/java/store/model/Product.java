@@ -20,13 +20,6 @@ public class Product {
         this.promotion = promotion;
     }
 
-    public boolean canPurchase(int quantity, int totalQuantity){
-        if (stock < quantity){
-            throw new IllegalArgumentException(ErrorMessage.EXCEEDS_STOCK_QUANTITY.getErrorMessage());
-        }
-        return true;
-    }
-
     public boolean isPromotionActive(){
         if (promotion == null || !promotion.isPromotionApplicable()){
             return false;
@@ -44,9 +37,8 @@ public class Product {
     }
 
     public Optional<PromotionQuantityOverStockDto> checkPromotionQuantityOverStock(int quantity, int totalStock){
-        int promotionQuantity = promotion.calculatePromotionQuantity(quantity);
-        if (promotionQuantity > stock && totalStock >= promotionQuantity){
-            return Optional.of(new PromotionQuantityOverStockDto(name, (promotionQuantity - stock)));
+        if (quantity > stock && totalStock >= quantity && promotion.isPromotionApplicable()){
+            return Optional.of(new PromotionQuantityOverStockDto(name, (quantity - stock)));
         }
         return Optional.empty();
     }
