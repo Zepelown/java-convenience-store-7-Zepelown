@@ -15,20 +15,24 @@ public class StoreOutputView {
     public void printProductStockNotification() {
         System.out.println(PRODUCT_STOCK_NOTIFICATION);
     }
-    public void printProductStock(List<ProductDto> products){
-         for (ProductDto product : products){
+
+    public void printProductStock(List<ProductDto> products) {
+        for (ProductDto product : products) {
             StringBuilder result = new StringBuilder();
-            result.append("- "+ product.getName());
-            result.append(" "+ decimalFormat.format(product.getPrice()));
-            result.append(" " + product.getQuantity()+"개");
-             String promotion = Optional.ofNullable(product.getPromotion())
-                     .filter(p -> !"null".equalsIgnoreCase(p))
-                     .orElse("재고없음");
-             result.append(" ").append(promotion);
+            result.append("- " + product.getName());
+            result.append(" " + decimalFormat.format(product.getPrice()));
+            result.append(" " + product.getQuantity() + "개");
+            String promotion = Optional.ofNullable(product.getPromotion())
+                    .filter(p -> !"null".equalsIgnoreCase(p))
+                    .orElse("재고없음");
+            result.append(" ").append(promotion);
             System.out.println(result);
-         }
+        }
     }
-    public void printErrorMessage(String errorMessage){
+
+    public void printErrorMessage(String errorMessage) {
         System.out.println(ERROR_MESSAGE_PREFIX + errorMessage);
     }
+
+
 }

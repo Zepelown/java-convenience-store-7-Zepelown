@@ -1,5 +1,7 @@
 package store.model;
 
+import store.dto.InsufficientBonusProductDto;
+import store.dto.PromotionQuantityOverStockDto;
 import store.exception.ErrorMessage;
 
 import java.time.LocalDateTime;
@@ -32,19 +34,21 @@ public class Product {
         return true;
     }
 
-    public void checkInsufficientBonusPromotionQuantity(int quantity){
+    public Optional<InsufficientBonusProductDto> checkInsufficientBonusPromotionQuantity(int quantity){
         int promotionQuantity = promotion.calculatePromotionQuantity(quantity);
         if (promotionQuantity > quantity && promotionQuantity <= stock){
-            throw new IllegalArgumentException("현재 "+name+"은(는) "+(promotionQuantity-quantity)+"개를 무료로 더 받을 수 있습니다. 추가하시겠습니까? (Y/N)");
+            return Optional.of(new InsufficientBonusProductDto(name, (promotionQuantity - quantity)));
+
         }
+        return Optional.empty();
     }
 
-    public boolean checkPromotionQuantityOverStock(int quantity, int totalStock){
+    public Optional<PromotionQuantityOverStockDto> checkPromotionQuantityOverStock(int quantity, int totalStock){
         int promotionQuantity = promotion.calculatePromotionQuantity(quantity);
         if (promotionQuantity > stock && totalStock >= promotionQuantity){
-            throw new IllegalArgumentException("현재 "+name+" "+(promotionQuantity-stock)+"개는 프로모션 할인이 적용되지 않습니다. 그래도 구매하시겠습니까? (Y/N)");
+            return Optional.of(new PromotionQuantityOverStockDto(name, (promotionQuantity - stock)));
         }
-        return false;
+        return Optional.empty();
     }
 
     public void reduceStock(int quantity) {

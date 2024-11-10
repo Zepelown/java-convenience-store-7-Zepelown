@@ -2,8 +2,11 @@ package store.controller;
 
 import store.data.repository.StoreProductRepository;
 import store.data.repository.StorePromotionRepository;
+import store.dto.InsufficientBonusProductDto;
 import store.dto.ProductDto;
 import store.dto.PromotionProductGroup;
+import store.dto.PromotionQuantityOverStockDto;
+import store.exception.ErrorMessage;
 import store.model.Product;
 import store.model.PurchaseProduct;
 import store.model.PurchaseProductFactory;
@@ -38,9 +41,10 @@ public class StoreController {
 
         List<PurchaseProduct> productsToBuy = getProductsToBuy();
 
-        for (PurchaseProduct purchaseProduct : productsToBuy){
+        for (PurchaseProduct purchaseProduct : productsToBuy) {
             PromotionProductGroup promotionProductGroup = getPurchasableProducts(purchaseProduct);
             checkInsufficientBonusPromotionQuantity(purchaseProduct, promotionProductGroup);
+            checkPromotionQuantityOverStock(purchaseProduct, promotionProductGroup);
         }
 
     }
@@ -56,40 +60,59 @@ public class StoreController {
             }
         }
     }
-    private PromotionProductGroup getPurchasableProducts(PurchaseProduct purchaseProduct){
-        while (true){
+
+    private PromotionProductGroup getPurchasableProducts(PurchaseProduct purchaseProduct) {
+        while (true) {
             try {
                 List<Product> sameProductNameStocks = storeStockService.getSameProductNameStocks(purchaseProduct);
                 List<Product> checkedProductStock = storeStockService.checkProductStock(purchaseProduct, sameProductNameStocks);
-                return storeStockService.separatePromotion(purchaseProduct,checkedProductStock);
-            } catch (IllegalArgumentException e){
+                return storeStockService.separatePromotion(purchaseProduct, checkedProductStock);
+            } catch (IllegalArgumentException e) {
                 storeOutputView.printErrorMessage(e.getMessage());
                 getProductsToBuy();
             }
         }
     }
-    private void checkInsufficientBonusPromotionQuantity(PurchaseProduct purchaseProduct, PromotionProductGroup promotionProductGroup){
-        try {
-            storeStockService.checkInsufficientBonusPromotionQuantity(purchaseProduct, promotionProductGroup);
-        } catch (IllegalArgumentException e){
-            getInsufficientBonusPromotionQuantity(e.getMessage());
+
+    private void checkInsufficientBonusPromotionQuantity(PurchaseProduct purchaseProduct, PromotionProductGroup promotionProductGroup) {
+        InsufficientBonusProductDto insufficientBonusProductDto = storeStockService.checkInsufficientBonusPromotionQuantity(purchaseProduct, promotionProductGroup);
+        if (insufficientBonusProductDto == null) {
+            return;
+        }
+        if (getInsufficientBonusPromotionQuantity(insufficientBonusProductDto)) {
+            //TODO : 재고 수량 제거
         }
     }
-    private boolean getInsufficientBonusPromotionQuantity(String message){
-        while(true){
-            try {
-                String confirmInsufficientBonusPromotionProduct = storeInputView.getConfirmInsufficientBonusPromotionProduct(message);
-                return YesNoValidator.isYes(confirmInsufficientBonusPromotionProduct);
-            } catch (IllegalArgumentException e){
 
+    private boolean getInsufficientBonusPromotionQuantity(InsufficientBonusProductDto insufficientBonusProductDto) {
+        while (true) {
+            try {
+                String confirmInsufficient = storeInputView.getConfirmInsufficientBonusPromotionProduct(insufficientBonusProductDto);
+                return YesNoValidator.validateYN(confirmInsufficient);
+            } catch (IllegalArgumentException e) {
+                storeOutputView.printErrorMessage(ErrorMessage.ETC_ERROR.getErrorMessage());
             }
         }
     }
-    private void checkPromotionQuantityOverStock(PurchaseProduct purchaseProduct, PromotionProductGroup promotionProductGroup){
-        try {
-            storeStockService.checkPromotionQuantityOverStock(purchaseProduct, promotionProductGroup);
-        } catch (IllegalArgumentException e){
 
+    private void checkPromotionQuantityOverStock(PurchaseProduct purchaseProduct, PromotionProductGroup promotionProductGroup) {
+        PromotionQuantityOverStockDto promotionQuantityOverStockDto = storeStockService.checkPromotionQuantityOverStock(purchaseProduct, promotionProductGroup);
+        if (promotionQuantityOverStockDto == null) {
+            return;
+        }
+        if (getPromotionQuantityOverStock(promotionQuantityOverStockDto)) {
+            //TODO : 재고 수량 제거
+        }
+    }
+
+    private boolean getPromotionQuantityOverStock(PromotionQuantityOverStockDto promotionQuantityOverStockDto) {
+        while (true) {
+            try {
+                String confirmOverStock = storeInputView.getPromotionQuantityOverStock(promotionQuantityOverStockDto);
+                return YesNoValidator.validateYN(confirmOverStock);
+            } catch (IllegalArgumentException e) {
+                storeOutputView.printErrorMessage(ErrorMessage.ETC_ERROR.getErrorMessage());
+            }
         }
     }
 }
