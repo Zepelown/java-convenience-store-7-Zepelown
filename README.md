@@ -13,7 +13,7 @@
 #### (2) 보유 상품 목록 불러온다
 `src/main/resources/products.md` 파일을 읽어 보유 상품 목록을 불러온다. 그 이후 데이터를 저장한다.
 ````
-name,price,quantity,promotion
+name,price,quantity,promotionEntity
 콜라,1000,10,탄산2+1
 콜라,1000,10,null
 사이다,1000,8,탄산2+1
@@ -32,7 +32,7 @@ name,price,quantity,promotion
 컵라면,1700,10,null
 
 ````
-불러올 파일의 형식은 위와 같이 "name,price,quantity,promotion"으로 ',' 단위로 구성되어 있다.
+불러올 파일의 형식은 위와 같이 "name,price,quantity,promotionEntity"으로 ',' 단위로 구성되어 있다.
 
 파일이 잘못됐을 경우 에러를 발생시키고 다음 경우에 수에 맞게 에러 메시지를 출력한다.
 1. 파일 로딩 실패 : IO Exception, `[ERROR] 파일을 불러올 수 없습니다.`
@@ -59,7 +59,7 @@ name,price,quantity,promotion
 - 컵라면 1,700원 1개 MD추천상품
 - 컵라면 1,700원 10개
 ````
-형식은 위와 같이 "-name,price,quantity,promotion" 으로 출력한다.  
+형식은 위와 같이 "-name,price,quantity,promotionEntity" 으로 출력한다.  
 이 때, 재고가 0개(null)라면 `재고 없음`을 출력한다.
 
 ### 3. 구매할 편의점 상품 입력

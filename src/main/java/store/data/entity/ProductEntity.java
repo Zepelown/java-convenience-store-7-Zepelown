@@ -1,15 +1,17 @@
 package store.data.entity;
 
 import store.dto.ProductDto;
+import store.model.Product;
+import store.model.Promotion;
 import store.util.EntityValidator;
 
-public class Product {
+public class ProductEntity {
     private String name;
     private int price;
     private int quantity;
     private String promotion;
 
-    public Product(String name, String price, String quantity, String promotion) {
+    public ProductEntity(String name, String price, String quantity, String promotion) {
         this.name = name;
         this.price = EntityValidator.parseInt(price);
         this.quantity = EntityValidator.parseInt(quantity);
@@ -35,6 +37,9 @@ public class Product {
 
     public ProductDto toDto() {
         return new ProductDto(name, price, quantity, promotion);
+    }
+    public Product toProduct(Promotion promotion){
+        return new Product(name,price,quantity,promotion);
     }
 
     public boolean equalsName(String name) {

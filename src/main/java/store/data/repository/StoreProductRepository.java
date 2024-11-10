@@ -1,7 +1,6 @@
 package store.data.repository;
 
-import store.data.entity.Product;
-import store.model.PurchaseProduct;
+import store.data.entity.ProductEntity;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -13,18 +12,18 @@ import java.util.stream.Collectors;
 public class StoreProductRepository implements StoreRepository {
     private final String PRODUCT_FILE_NAME = "products.md";
 
-    private List<Product> productStock;
+    private List<ProductEntity> productStock;
 
     public StoreProductRepository() throws IOException {
         productStock = loadProductsFromFile();
     }
 
-    public List<Product> loadProductStock() {
+    public List<ProductEntity> loadProductStock() {
         return productStock;
     }
-    public Optional<List<Product>> findPurchasableProductsByName(String name){
-        ArrayList<Product> purchasableProducts = new ArrayList<>();
-        for (Product stock : productStock){
+    public Optional<List<ProductEntity>> findPurchasableProductsByName(String name){
+        ArrayList<ProductEntity> purchasableProducts = new ArrayList<>();
+        for (ProductEntity stock : productStock){
             if (stock.equalsName(name)){
                 purchasableProducts.add(stock);
             }
@@ -32,7 +31,7 @@ public class StoreProductRepository implements StoreRepository {
         return Optional.of(purchasableProducts);
     }
 
-    private List<Product> loadProductsFromFile() throws IOException {
+    private List<ProductEntity> loadProductsFromFile() throws IOException {
         try (BufferedReader reader = createBufferedReader(PRODUCT_FILE_NAME)) {
             return reader.lines()
                     .skip(1)
@@ -41,7 +40,7 @@ public class StoreProductRepository implements StoreRepository {
         }
     }
 
-    private Product parseProductLine(String line) {
+    private ProductEntity parseProductLine(String line) {
         String[] parts = line.split(FILE_DELIMITER);
         String name = parts[0];
         String price = parts[1];
@@ -52,6 +51,6 @@ public class StoreProductRepository implements StoreRepository {
             promotion = parts[3];
         }
 
-        return new Product(name, price, quantity, promotion);
+        return new ProductEntity(name, price, quantity, promotion);
     }
 }
