@@ -8,6 +8,7 @@ import store.model.Product;
 import store.model.PurchaseProduct;
 import store.model.PurchaseProductFactory;
 import store.service.StoreStockService;
+import store.util.YesNoValidator;
 import store.view.StoreInputView;
 import store.view.StoreOutputView;
 
@@ -71,6 +72,17 @@ public class StoreController {
         try {
             storeStockService.checkInsufficientBonusPromotionQuantity(purchaseProduct,separatedProducts);
         } catch (IllegalArgumentException e){
+            getInsufficientBonusPromotionQuantity(e.getMessage());
+        }
+    }
+    private boolean getInsufficientBonusPromotionQuantity(String message){
+        while(true){
+            try {
+                String confirmInsufficientBonusPromotionProduct = storeInputView.getConfirmInsufficientBonusPromotionProduct(message);
+                return YesNoValidator.isYes(confirmInsufficientBonusPromotionProduct);
+            } catch (IllegalArgumentException e){
+
+            }
         }
     }
 }
