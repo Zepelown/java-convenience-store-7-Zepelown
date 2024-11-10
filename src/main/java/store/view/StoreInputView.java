@@ -19,4 +19,8 @@ public class StoreInputView {
         System.out.println("현재 " + promotionQuantityOverStock.getName() + " " + promotionQuantityOverStock.getQuantity() + "개는 프로모션 할인이 적용되지 않습니다. 그래도 구매하시겠습니까? (Y/N)");
         return Console.readLine();
     }
+    public String getMemberShipConfirm(){
+        System.out.println("멤버십 할인을 받으시겠습니까? (Y/N)");
+        return Console.readLine();
+    }
 }

@@ -44,6 +44,10 @@ public class StoreController {
             purchasedProducts.add(processPurchaseProduct(purchaseProduct));
         }
 
+        if (getMemberShipConfirm()){
+            
+        }
+
     }
 
     private List<PurchaseProduct> getProductsToBuy() {
@@ -59,7 +63,7 @@ public class StoreController {
 
     private PurchasedProduct processPurchaseProduct(PurchaseProduct purchaseProduct) {
         PromotionProductGroup promotionProductGroup = getPurchasableProducts(purchaseProduct);
-        PurchasedProduct purchasedProduct = new PurchasedProduct(purchaseProduct.getName(),purchaseProduct.getQuantity(), 0,0, promotionProductGroup.getProductCost(),promotionProductGroup.getProductPromotion());
+        PurchasedProduct purchasedProduct = new PurchasedProduct(purchaseProduct.getName(), purchaseProduct.getQuantity(), 0, 0, promotionProductGroup.getProductCost(), promotionProductGroup.getProductPromotion());
 
         PurchasedProduct checkedPurchasedProduct = checkInsufficientBonusPromotionQuantity(purchasedProduct, promotionProductGroup);
 
@@ -67,6 +71,10 @@ public class StoreController {
 
 
         return storeStockService.buyProduct(checkedPurchasedProduct, promotionProductGroup);
+    }
+
+    private void finalizePurchasingProduct(List<PurchasedProduct> purchasedProducts) {
+
     }
 
     private PromotionProductGroup getPurchasableProducts(PurchaseProduct purchaseProduct) {
@@ -128,6 +136,17 @@ public class StoreController {
             try {
                 String confirmOverStock = storeInputView.getPromotionQuantityOverStock(promotionQuantityOverStockDto);
                 return YesNoValidator.validateYN(confirmOverStock);
+            } catch (IllegalArgumentException e) {
+                storeOutputView.printErrorMessage(ErrorMessage.ETC_ERROR.getErrorMessage());
+            }
+        }
+    }
+
+    private boolean getMemberShipConfirm() {
+        while (true) {
+            try {
+                String memberShipConfirm = storeInputView.getMemberShipConfirm();
+                return YesNoValidator.validateYN(memberShipConfirm);
             } catch (IllegalArgumentException e) {
                 storeOutputView.printErrorMessage(ErrorMessage.ETC_ERROR.getErrorMessage());
             }
