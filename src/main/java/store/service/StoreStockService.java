@@ -3,19 +3,16 @@ package store.service;
 import store.data.entity.ProductEntity;
 import store.data.repository.StoreProductRepository;
 import store.data.repository.StorePromotionRepository;
-import store.dto.InsufficientBonusProductDto;
 import store.dto.ProductDto;
-import store.dto.PromotionProductGroup;
-import store.dto.PromotionQuantityOverStockDto;
 import store.exception.ErrorMessage;
 import store.model.Product;
 import store.model.Promotion;
+import store.model.PromotionProductGroup;
 import store.model.PurchaseProduct;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 public class StoreStockService {
@@ -35,6 +32,19 @@ public class StoreStockService {
                 .collect(Collectors.toList());
     }
 
+    public void buyProduct(PurchaseProduct purchaseProduct, PromotionProductGroup promotionProductGroup) {
+        int promotionStock = promotionProductGroup.getPromotionProduct().getStock();
+        int requiredStock = purchaseProduct.getQuantity();
+
+        if (requiredStock <= promotionStock) {
+            reducePromotionStock(purchaseProduct.getName(), purchaseProduct.getQuantity());
+            return;
+        }
+
+        reducePromotionStock(purchaseProduct.getName(), promotionStock);
+        int remainingBuyingStock = purchaseProduct.getQuantity() - promotionStock;
+        reducePromotionStock(purchaseProduct.getName(), remainingBuyingStock);
+    }
 
     public PromotionProductGroup separatePromotion(List<Product> checkedProductStock) {
         Product promotionProduct = null;
@@ -52,28 +62,6 @@ public class StoreStockService {
         return new PromotionProductGroup(promotionProduct, nonPromotionProducts, totalStock);
     }
 
-    public InsufficientBonusProductDto checkInsufficientBonusPromotionQuantity(PurchaseProduct purchaseProduct, PromotionProductGroup promotionProductGroup) {
-        Product promotionProduct = promotionProductGroup.getPromotionProduct();
-        if (promotionProduct == null) {
-            return null;
-        }
-
-        Optional<InsufficientBonusProductDto> insufficientBonusProductDto = promotionProduct.checkInsufficientBonusPromotionQuantity(purchaseProduct.getQuantity());
-
-        return insufficientBonusProductDto.orElse(null);
-
-    }
-
-    public PromotionQuantityOverStockDto checkPromotionQuantityOverStock(PurchaseProduct purchaseProduct, PromotionProductGroup promotionProductGroup) {
-        Product promotionProduct = promotionProductGroup.getPromotionProduct();
-        if (promotionProduct == null) {
-            return null;
-        }
-        Optional<PromotionQuantityOverStockDto> promotionQuantityOverStockDto = promotionProduct.checkPromotionQuantityOverStock(purchaseProduct.getQuantity(), promotionProductGroup.getTotalStock());
-
-        return promotionQuantityOverStockDto.orElse(null);
-    }
-
     public List<Product> getSameProductNameStocks(PurchaseProduct purchaseProduct) {
         List<Product> purchasableProducts = new ArrayList<>();
 
@@ -89,7 +77,7 @@ public class StoreStockService {
     }
 
     public void checkProductStock(PurchaseProduct purchaseProduct, PromotionProductGroup promotionProductGroup) {
-        if (promotionProductGroup.getTotalStock() < purchaseProduct.getQuantity()){
+        if (promotionProductGroup.getTotalStock() < purchaseProduct.getQuantity()) {
             throw new IllegalArgumentException(ErrorMessage.EXCEEDS_STOCK_QUANTITY.getErrorMessage());
         }
     }
@@ -103,6 +91,15 @@ public class StoreStockService {
 
             stock.computeIfAbsent(productEntity.getName(), name -> new ArrayList<>())
                     .add(productEntity.toProduct(promotion));
+        }
+    }
+
+    private void reducePromotionStock(String name, int quantity) {
+        List<Product> products = stock.get(name);
+        for (Product product : products) {
+            if (product.isPromotionActive()) {
+                product.reduceStock(quantity);
+            }
         }
     }
 }

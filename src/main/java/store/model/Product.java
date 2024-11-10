@@ -44,10 +44,12 @@ public class Product {
     }
 
     public void reduceStock(int quantity) {
-        if (stock < quantity){
-            throw new IllegalArgumentException("");
+        if (stock >= quantity){
+            if (promotion.isPromotionApplicable()){
+
+            }
+            stock -= quantity;
         }
-        stock -= quantity;
     }
 
     public String getName() {
@@ -64,5 +66,10 @@ public class Product {
 
     public Promotion getPromotion() {
         return promotion;
+    }
+
+    @Override
+    public String toString() {
+        return "Product{name='" + name + "', stock=" + stock + ", price=" + price + "}";
     }
 }

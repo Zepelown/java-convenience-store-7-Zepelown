@@ -4,10 +4,10 @@ import store.data.repository.StoreProductRepository;
 import store.data.repository.StorePromotionRepository;
 import store.dto.InsufficientBonusProductDto;
 import store.dto.ProductDto;
-import store.dto.PromotionProductGroup;
 import store.dto.PromotionQuantityOverStockDto;
 import store.exception.ErrorMessage;
 import store.model.Product;
+import store.model.PromotionProductGroup;
 import store.model.PurchaseProduct;
 import store.model.PurchaseProductFactory;
 import store.service.StoreStockService;
@@ -42,9 +42,7 @@ public class StoreController {
         List<PurchaseProduct> productsToBuy = getProductsToBuy();
 
         for (PurchaseProduct purchaseProduct : productsToBuy) {
-            PromotionProductGroup promotionProductGroup = getPurchasableProducts(purchaseProduct);
-            checkInsufficientBonusPromotionQuantity(purchaseProduct, promotionProductGroup);
-            checkPromotionQuantityOverStock(purchaseProduct, promotionProductGroup);
+            processPurchaseProduct(purchaseProduct);
         }
 
     }
@@ -56,9 +54,22 @@ public class StoreController {
                 return purchaseProductFactory.parsePurchaseProduct(userInput);
             } catch (IllegalArgumentException e) {
                 storeOutputView.printErrorMessage(e.getMessage());
-                getProductsToBuy();
             }
         }
+    }
+
+    private void processPurchaseProduct(PurchaseProduct purchaseProduct) {
+        PromotionProductGroup promotionProductGroup = getPurchasableProducts(purchaseProduct);
+
+        PurchaseProduct checkedPurchaseProduct = checkInsufficientBonusPromotionQuantity(purchaseProduct, promotionProductGroup);
+
+        checkedPurchaseProduct = checkPromotionQuantityOverStock(checkedPurchaseProduct, promotionProductGroup);
+
+        finalizePurchaseProduct(checkedPurchaseProduct,promotionProductGroup);
+    }
+
+    private void finalizePurchaseProduct(PurchaseProduct purchaseProduct, PromotionProductGroup promotionProductGroup) {
+        storeStockService.buyProduct(purchaseProduct,promotionProductGroup);
     }
 
     private PromotionProductGroup getPurchasableProducts(PurchaseProduct purchaseProduct) {
@@ -75,14 +86,19 @@ public class StoreController {
         }
     }
 
-    private void checkInsufficientBonusPromotionQuantity(PurchaseProduct purchaseProduct, PromotionProductGroup promotionProductGroup) {
-        InsufficientBonusProductDto insufficientBonusProductDto = storeStockService.checkInsufficientBonusPromotionQuantity(purchaseProduct, promotionProductGroup);
-        if (insufficientBonusProductDto == null) {
-            return;
+    private PurchaseProduct checkInsufficientBonusPromotionQuantity(PurchaseProduct purchaseProduct, PromotionProductGroup promotionProductGroup) {
+        InsufficientBonusProductDto bonusProductDto = promotionProductGroup.checkInsufficientBonusPromotionQuantity(purchaseProduct);
+
+        if (bonusProductDto == null) {
+            return purchaseProduct;
         }
-        if (getInsufficientBonusPromotionQuantity(insufficientBonusProductDto)) {
-            //TODO : 재고 수량 제거
+
+        boolean confirmedAdditionalQuantity = getInsufficientBonusPromotionQuantity(bonusProductDto);
+        if (confirmedAdditionalQuantity) {
+            purchaseProduct.addQuantity(bonusProductDto.getQuantity());
         }
+
+        return purchaseProduct;
     }
 
     private boolean getInsufficientBonusPromotionQuantity(InsufficientBonusProductDto insufficientBonusProductDto) {
@@ -96,14 +112,18 @@ public class StoreController {
         }
     }
 
-    private void checkPromotionQuantityOverStock(PurchaseProduct purchaseProduct, PromotionProductGroup promotionProductGroup) {
-        PromotionQuantityOverStockDto promotionQuantityOverStockDto = storeStockService.checkPromotionQuantityOverStock(purchaseProduct, promotionProductGroup);
-        if (promotionQuantityOverStockDto == null) {
-            return;
+    private PurchaseProduct checkPromotionQuantityOverStock(PurchaseProduct purchaseProduct, PromotionProductGroup promotionProductGroup) {
+        PromotionQuantityOverStockDto overStockDto = promotionProductGroup.checkPromotionQuantityOverStock(purchaseProduct);
+        if (overStockDto == null) {
+            return purchaseProduct;
         }
-        if (getPromotionQuantityOverStock(promotionQuantityOverStockDto)) {
-            //TODO : 재고 수량 제거
+
+        boolean confirmAdditionalQuantity = getPromotionQuantityOverStock(overStockDto);
+        if (!confirmAdditionalQuantity) {
+            purchaseProduct.minusQuantity(overStockDto.getQuantity());
         }
+
+        return purchaseProduct;
     }
 
     private boolean getPromotionQuantityOverStock(PromotionQuantityOverStockDto promotionQuantityOverStockDto) {
