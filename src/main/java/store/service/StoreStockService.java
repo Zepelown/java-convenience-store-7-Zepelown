@@ -54,6 +54,7 @@ public class StoreStockService {
         for (Product product : checkedProductStock) {
             if (product.isPromotionActive()) {
                 promotionProduct = product;
+                totalStock += product.getStock();
                 continue;
             }
             nonPromotionProducts.add(product);
@@ -77,7 +78,7 @@ public class StoreStockService {
     }
 
     public void checkProductStock(PurchaseProduct purchaseProduct, PromotionProductGroup promotionProductGroup) {
-        if (promotionProductGroup.getTotalStock() < purchaseProduct.getQuantity()) {
+        if (promotionProductGroup.getTotalStock() <= purchaseProduct.getQuantity()) {
             throw new IllegalArgumentException(ErrorMessage.EXCEEDS_STOCK_QUANTITY.getErrorMessage());
         }
     }
