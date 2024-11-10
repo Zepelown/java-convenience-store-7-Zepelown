@@ -1,11 +1,9 @@
 package store.model;
 
 import camp.nextstep.edu.missionutils.DateTimes;
-import store.model.Product;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.Optional;
 
 public class Promotion {
     private final String name;
@@ -34,9 +32,12 @@ public class Promotion {
                 (end.isAfter(now) || end.isEqual(now));
     }
 
-
     public int calculatePromotionQuantity(int quantity) {
         int applicableSets = quantity / buy;
         return quantity + applicableSets * get;
+    }
+
+    public int getBuyQuantity(int quantity) {
+        return quantity / (buy + get);
     }
 }

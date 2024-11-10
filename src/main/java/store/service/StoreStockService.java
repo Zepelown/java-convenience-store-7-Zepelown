@@ -5,10 +5,7 @@ import store.data.repository.StoreProductRepository;
 import store.data.repository.StorePromotionRepository;
 import store.dto.ProductDto;
 import store.exception.ErrorMessage;
-import store.model.Product;
-import store.model.Promotion;
-import store.model.PromotionProductGroup;
-import store.model.PurchaseProduct;
+import store.model.*;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -32,18 +29,21 @@ public class StoreStockService {
                 .collect(Collectors.toList());
     }
 
-    public void buyProduct(PurchaseProduct purchaseProduct, PromotionProductGroup promotionProductGroup) {
+    public PurchasedProduct buyProduct(PurchaseProduct purchaseProduct, PromotionProductGroup promotionProductGroup) {
         int promotionStock = promotionProductGroup.getPromotionProduct().getStock();
         int requiredStock = purchaseProduct.getQuantity();
-
-        if (requiredStock <= promotionStock) {
-            reducePromotionStock(purchaseProduct.getName(), purchaseProduct.getQuantity());
-            return;
-        }
+        PurchasedProduct purchasedProduct = new PurchasedProduct(purchaseProduct.getName(), 0, 0, promotionProductGroup.getProductCost(), promotionProductGroup.getProductPromotion());
 
         reducePromotionStock(purchaseProduct.getName(), promotionStock);
+        purchasedProduct.addPromotionQuantity(purchaseProduct.getQuantity());
+        if (requiredStock <= promotionStock) {
+            return purchasedProduct;
+        }
+
         int remainingBuyingStock = purchaseProduct.getQuantity() - promotionStock;
-        reducePromotionStock(purchaseProduct.getName(), remainingBuyingStock);
+        reduceNonPromotionStock(purchaseProduct.getName(), remainingBuyingStock);
+        purchasedProduct.addPromotionQuantity(purchaseProduct.getQuantity());
+        return purchasedProduct;
     }
 
     public PromotionProductGroup separatePromotion(List<Product> checkedProductStock) {
@@ -98,6 +98,15 @@ public class StoreStockService {
         List<Product> products = stock.get(name);
         for (Product product : products) {
             if (product.isPromotionActive()) {
+                product.reduceStock(quantity);
+            }
+        }
+    }
+
+    private void reduceNonPromotionStock(String name, int quantity) {
+        List<Product> products = stock.get(name);
+        for (Product product : products) {
+            if (!product.isPromotionActive()) {
                 product.reduceStock(quantity);
             }
         }

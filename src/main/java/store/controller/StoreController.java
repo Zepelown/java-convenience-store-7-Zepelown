@@ -6,15 +6,13 @@ import store.dto.InsufficientBonusProductDto;
 import store.dto.ProductDto;
 import store.dto.PromotionQuantityOverStockDto;
 import store.exception.ErrorMessage;
-import store.model.Product;
-import store.model.PromotionProductGroup;
-import store.model.PurchaseProduct;
-import store.model.PurchaseProductFactory;
+import store.model.*;
 import store.service.StoreStockService;
 import store.util.YesNoValidator;
 import store.view.StoreInputView;
 import store.view.StoreOutputView;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class StoreController {
@@ -41,10 +39,10 @@ public class StoreController {
 
         List<PurchaseProduct> productsToBuy = getProductsToBuy();
 
+        List<PurchasedProduct> purchasedProducts = new ArrayList<>();
         for (PurchaseProduct purchaseProduct : productsToBuy) {
-            processPurchaseProduct(purchaseProduct);
+            purchasedProducts.add(processPurchaseProduct(purchaseProduct));
         }
-
     }
 
     private List<PurchaseProduct> getProductsToBuy() {
@@ -58,18 +56,14 @@ public class StoreController {
         }
     }
 
-    private void processPurchaseProduct(PurchaseProduct purchaseProduct) {
+    private PurchasedProduct processPurchaseProduct(PurchaseProduct purchaseProduct) {
         PromotionProductGroup promotionProductGroup = getPurchasableProducts(purchaseProduct);
 
         PurchaseProduct checkedPurchaseProduct = checkInsufficientBonusPromotionQuantity(purchaseProduct, promotionProductGroup);
 
         checkedPurchaseProduct = checkPromotionQuantityOverStock(checkedPurchaseProduct, promotionProductGroup);
 
-        finalizePurchaseProduct(checkedPurchaseProduct,promotionProductGroup);
-    }
-
-    private void finalizePurchaseProduct(PurchaseProduct purchaseProduct, PromotionProductGroup promotionProductGroup) {
-        storeStockService.buyProduct(purchaseProduct,promotionProductGroup);
+        return storeStockService.buyProduct(checkedPurchaseProduct, promotionProductGroup);
     }
 
     private PromotionProductGroup getPurchasableProducts(PurchaseProduct purchaseProduct) {
@@ -121,8 +115,10 @@ public class StoreController {
         boolean confirmAdditionalQuantity = getPromotionQuantityOverStock(overStockDto);
         if (!confirmAdditionalQuantity) {
             purchaseProduct.minusQuantity(overStockDto.getQuantity());
+            return purchaseProduct;
         }
 
+        purchaseProduct.overStockAvailable(overStockDto.getQuantity());
         return purchaseProduct;
     }
 

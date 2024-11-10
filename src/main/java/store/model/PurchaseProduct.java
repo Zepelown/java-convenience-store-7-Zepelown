@@ -7,6 +7,10 @@ public class PurchaseProduct {
     private final String name;
     private int quantity;
 
+    private boolean isOverStockAvailable = false;
+
+    private int overStockQuantity = 0;
+
     public PurchaseProduct(String name, String quantity) {
         this.name = name;
         this.quantity = ModelValidator.parseInt(quantity, ErrorMessage.INVALID_BUYING_PRODUCT_INPUT_FORMAT.getErrorMessage());
@@ -29,9 +33,16 @@ public class PurchaseProduct {
         this.quantity -= quantity;
     }
 
+    public void overStockAvailable(int quantity){
+        isOverStockAvailable = true;
+        overStockQuantity += quantity;
+        this.quantity -= quantity;
+    }
+
     private void validate() {
         ModelValidator.validateString(name, ErrorMessage.INVALID_BUYING_PRODUCT_INPUT_FORMAT.getErrorMessage());
         ModelValidator.validateInt(quantity, ErrorMessage.INVALID_BUYING_PRODUCT_INPUT_FORMAT.getErrorMessage());
     }
+
 
 }
