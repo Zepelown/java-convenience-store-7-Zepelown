@@ -25,11 +25,18 @@ public class Product {
         return true;
     }
 
-    public Optional<Integer> applyPromotion(int quantity, LocalDateTime date) {
-        if (promotion != null && promotion.isPromotionApplicable(date)) {
-            return promotion.calculatePromotion(quantity, this);
+    public boolean isPromotionActive(){
+        if (promotion == null || !promotion.isPromotionApplicable()){
+            return false;
         }
-        return Optional.empty();
+        return true;
+    }
+
+    public void checkInsufficientBonusPromotionQuantity(int quantity){
+        int promotionQuantity = promotion.calculatePromotionQuantity(quantity);
+        if (promotionQuantity > quantity){
+            throw new IllegalArgumentException("현재 "+name+"은(는) "+promotionQuantity+"개를 무료로 더 받을 수 있습니다. 추가하시겠습니까? (Y/N)");
+        }
     }
 
     public void reduceStock(int quantity) {

@@ -22,7 +22,7 @@ public class Promotion {
         this.endDate = endDate;
     }
 
-    public boolean isPromotionApplicable(LocalDateTime date) {
+    public boolean isPromotionApplicable() {
         LocalDateTime now = DateTimes.now();
         LocalDateTime start = startDate.atStartOfDay();
         LocalDateTime end = endDate.atTime(23, 59, 59);
@@ -32,14 +32,8 @@ public class Promotion {
     }
 
 
-    public Optional<Integer> calculatePromotion(int quantity, Product product) {
-        int applicableSets = quantity / (buy + get);
-        int finalQuantity = quantity + applicableSets * get;
-
-        if (product.getStock()< applicableSets * get) {
-            return Optional.of(product.getStock());
-        } else {
-            return Optional.of(finalQuantity);
-        }
+    public int calculatePromotionQuantity(int quantity) {
+        int applicableSets = quantity / buy;
+        return quantity + applicableSets * get;
     }
 }

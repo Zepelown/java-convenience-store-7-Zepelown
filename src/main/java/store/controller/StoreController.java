@@ -3,6 +3,8 @@ package store.controller;
 import store.data.repository.StoreProductRepository;
 import store.data.repository.StorePromotionRepository;
 import store.dto.ProductDto;
+import store.dto.SeparatedProducts;
+import store.model.Product;
 import store.model.PurchaseProduct;
 import store.model.PurchaseProductFactory;
 import store.service.StoreStockService;
@@ -34,7 +36,12 @@ public class StoreController {
         storeOutputView.printProductStock(products);
 
         List<PurchaseProduct> productsToBuy = getProductsToBuy();
-        storeStockService.buyProducts(productsToBuy);
+        for (PurchaseProduct purchaseProduct : productsToBuy){
+            List<Product> sameProductNameStocks = storeStockService.getSameProductNameStocks(purchaseProduct);
+            List<Product> checkedProductStock = storeStockService.checkProductStock(purchaseProduct, sameProductNameStocks);
+            SeparatedProducts separatedProducts = storeStockService.separatePromotion(purchaseProduct,checkedProductStock);
+            storeStockService.checkInsufficientBonusPromotionQuantity(purchaseProduct,separatedProducts);
+        }
     }
 
     private List<PurchaseProduct> getProductsToBuy() {

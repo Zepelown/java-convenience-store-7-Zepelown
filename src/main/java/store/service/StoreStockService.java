@@ -4,6 +4,7 @@ import store.data.entity.ProductEntity;
 import store.data.repository.StoreProductRepository;
 import store.data.repository.StorePromotionRepository;
 import store.dto.ProductDto;
+import store.dto.SeparatedProducts;
 import store.exception.ErrorMessage;
 import store.model.Product;
 import store.model.Promotion;
@@ -31,33 +32,47 @@ public class StoreStockService {
                 .collect(Collectors.toList());
     }
 
-    public void buyProducts(List<PurchaseProduct> purchaseProducts) {
-        for (PurchaseProduct purchaseProduct : purchaseProducts){
-            List<Product> sameProductNameStocks = getSameProductNameStocks(purchaseProduct);
-            List<Product> checkedProductStock = checkProductStock(purchaseProduct, sameProductNameStocks);
+    public SeparatedProducts separatePromotion(PurchaseProduct purchaseProduct, List<Product> checkedProductStock) {
+        Product promotionProduct = null;
+        ArrayList<Product> nonPromotionProducts = null;
 
+        for (Product product : checkedProductStock) {
+            if (product.isPromotionActive()){
+                promotionProduct = product;
+                continue;
+            }
+            nonPromotionProducts.add(product);
         }
+        return new SeparatedProducts(promotionProduct, nonPromotionProducts);
     }
 
-    private List<Product> getSameProductNameStocks(PurchaseProduct purchaseProduct) {
+    public void checkInsufficientBonusPromotionQuantity(PurchaseProduct purchaseProduct,SeparatedProducts separatedProducts){
+        Product promotionProduct = separatedProducts.getPromotionProduct();
+        if (promotionProduct == null){
+            return;
+        }
+        promotionProduct.checkInsufficientBonusPromotionQuantity(purchaseProduct.getQuantity());
+    }
+
+    public List<Product> getSameProductNameStocks(PurchaseProduct purchaseProduct) {
         List<Product> purchasableProducts = new ArrayList<>();
 
         purchasableProducts.addAll(
                 stock.getOrDefault(purchaseProduct.getName(), new ArrayList<>())
         );
 
-        if (purchasableProducts.isEmpty()){
+        if (purchasableProducts.isEmpty()) {
             throw new IllegalArgumentException(ErrorMessage.NON_EXISTENT_PRODUCT.getErrorMessage());
         }
 
         return purchasableProducts;
     }
 
-    private List<Product> checkProductStock(PurchaseProduct purchaseProduct, List<Product> sameProductNameStocks) {
+    public List<Product> checkProductStock(PurchaseProduct purchaseProduct, List<Product> sameProductNameStocks) {
         List<Product> products = sameProductNameStocks.stream()
                 .filter(it -> !it.canPurchase(purchaseProduct.getQuantity()))
                 .collect(Collectors.toList());
-        if (products.isEmpty()){
+        if (products.isEmpty()) {
             throw new IllegalArgumentException(ErrorMessage.EXCEEDS_STOCK_QUANTITY.getErrorMessage());
         }
         return products;
