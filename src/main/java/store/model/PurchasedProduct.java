@@ -2,32 +2,68 @@ package store.model;
 
 public class PurchasedProduct {
     private final String name;
-    private int promotionQuantity;
-    private int nonPromotionQuantity;
     private final int price;
     private final Promotion promotion;
+    private int totalQuantity;
+    private int buyingQuantity;
+    private int freeQuantity;
 
-    public PurchasedProduct(String name, int promotionQuantity, int nonPromotionQuantity, int price, Promotion promotion) {
+    public PurchasedProduct(String name, int totalQuantity, int buyingQuantity, int freeQuantity, int price, Promotion promotion) {
         this.name = name;
-        this.promotionQuantity = promotionQuantity;
-        this.nonPromotionQuantity = nonPromotionQuantity;
+        this.totalQuantity = totalQuantity;
+        this.buyingQuantity = buyingQuantity;
+        this.freeQuantity = freeQuantity;
         this.price = price;
         this.promotion = promotion;
+        calculateTotalQuantities();
     }
 
-    public void addPromotionQuantity(int quantity){
-        promotionQuantity += quantity;
+    public void minusBuyingQuantity(int quantity) {
+        buyingQuantity -= quantity;
+        calculateTotalQuantities();
     }
-    public void addNonPromotionQuantity(int quantity){
-        nonPromotionQuantity += quantity;
+
+    public void minusFreeQuantity(int quantity) {
+        freeQuantity += quantity;
+        calculateTotalQuantities();
+    }
+
+    public void addFreeQuantity(int quantity) {
+        freeQuantity += quantity;
+        calculateTotalQuantities();
+    }
+
+    public void calculateTotalQuantities() {
+        if (promotion != null && promotion.isPromotionApplicable()) {
+            int[] quantities = promotion.calculatePaidAndFreeQuantity(totalQuantity);
+            this.buyingQuantity = quantities[0];
+            this.freeQuantity = quantities[1];
+        } else {
+            this.buyingQuantity = totalQuantity;
+            this.freeQuantity = 0;
+        }
+    }
+
+    public int getTotalQuantity() {
+        return totalQuantity;
+    }
+
+    public void addTotalQuantity(int quantity){
+        totalQuantity += quantity;
+        calculateTotalQuantities();
+    }
+
+    public void minusTotalQuantity(int quantity){
+        totalQuantity -= quantity;
+        calculateTotalQuantities();
     }
 
     public String getName() {
         return name;
     }
 
-    public int getPromotionQuantity() {
-        return promotionQuantity;
+    public int getBuyingQuantity() {
+        return buyingQuantity;
     }
 
     public int getPrice() {
@@ -38,12 +74,12 @@ public class PurchasedProduct {
         return promotion;
     }
 
-    public int getNonPromotionQuantity() {
-        return nonPromotionQuantity;
+    public int getFreeQuantity() {
+        return freeQuantity;
     }
 
     @Override
     public String toString() {
-        return "PurchasedProduct{name='" + name + "', quantity=" + promotionQuantity + ", price=" + price + "}";
+        return "PurchasedProduct{name='" + name + "', quantity=" + buyingQuantity + ", price=" + price + "}";
     }
 }

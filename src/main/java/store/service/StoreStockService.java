@@ -29,20 +29,17 @@ public class StoreStockService {
                 .collect(Collectors.toList());
     }
 
-    public PurchasedProduct buyProduct(PurchaseProduct purchaseProduct, PromotionProductGroup promotionProductGroup) {
+    public PurchasedProduct buyProduct(PurchasedProduct purchasedProduct, PromotionProductGroup promotionProductGroup) {
         int promotionStock = promotionProductGroup.getPromotionProduct().getStock();
-        int requiredStock = purchaseProduct.getQuantity();
-        PurchasedProduct purchasedProduct = new PurchasedProduct(purchaseProduct.getName(), 0, 0, promotionProductGroup.getProductCost(), promotionProductGroup.getProductPromotion());
+        int requiredStock = purchasedProduct.getTotalQuantity();
 
-        reducePromotionStock(purchaseProduct.getName(), promotionStock);
-        purchasedProduct.addPromotionQuantity(purchaseProduct.getQuantity());
+        reducePromotionStock(purchasedProduct.getName(), promotionStock);
         if (requiredStock <= promotionStock) {
             return purchasedProduct;
         }
 
-        int remainingBuyingStock = purchaseProduct.getQuantity() - promotionStock;
-        reduceNonPromotionStock(purchaseProduct.getName(), remainingBuyingStock);
-        purchasedProduct.addPromotionQuantity(purchaseProduct.getQuantity());
+        int remainingBuyingStock = purchasedProduct.getTotalQuantity() - promotionStock;
+        reduceNonPromotionStock(purchasedProduct.getName(), remainingBuyingStock);
         return purchasedProduct;
     }
 
@@ -78,7 +75,7 @@ public class StoreStockService {
     }
 
     public void checkProductStock(PurchaseProduct purchaseProduct, PromotionProductGroup promotionProductGroup) {
-        if (promotionProductGroup.getTotalStock() <= purchaseProduct.getQuantity()) {
+        if (promotionProductGroup.getTotalStock() < purchaseProduct.getQuantity()) {
             throw new IllegalArgumentException(ErrorMessage.EXCEEDS_STOCK_QUANTITY.getErrorMessage());
         }
     }

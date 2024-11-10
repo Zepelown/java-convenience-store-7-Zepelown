@@ -43,6 +43,7 @@ public class StoreController {
         for (PurchaseProduct purchaseProduct : productsToBuy) {
             purchasedProducts.add(processPurchaseProduct(purchaseProduct));
         }
+
     }
 
     private List<PurchaseProduct> getProductsToBuy() {
@@ -58,12 +59,14 @@ public class StoreController {
 
     private PurchasedProduct processPurchaseProduct(PurchaseProduct purchaseProduct) {
         PromotionProductGroup promotionProductGroup = getPurchasableProducts(purchaseProduct);
+        PurchasedProduct purchasedProduct = new PurchasedProduct(purchaseProduct.getName(),purchaseProduct.getQuantity(), 0,0, promotionProductGroup.getProductCost(),promotionProductGroup.getProductPromotion());
 
-        PurchaseProduct checkedPurchaseProduct = checkInsufficientBonusPromotionQuantity(purchaseProduct, promotionProductGroup);
+        PurchasedProduct checkedPurchasedProduct = checkInsufficientBonusPromotionQuantity(purchasedProduct, promotionProductGroup);
 
-        checkedPurchaseProduct = checkPromotionQuantityOverStock(checkedPurchaseProduct, promotionProductGroup);
+        checkedPurchasedProduct = checkPromotionQuantityOverStock(checkedPurchasedProduct, promotionProductGroup);
 
-        return storeStockService.buyProduct(checkedPurchaseProduct, promotionProductGroup);
+
+        return storeStockService.buyProduct(checkedPurchasedProduct, promotionProductGroup);
     }
 
     private PromotionProductGroup getPurchasableProducts(PurchaseProduct purchaseProduct) {
@@ -80,19 +83,19 @@ public class StoreController {
         }
     }
 
-    private PurchaseProduct checkInsufficientBonusPromotionQuantity(PurchaseProduct purchaseProduct, PromotionProductGroup promotionProductGroup) {
-        InsufficientBonusProductDto bonusProductDto = promotionProductGroup.checkInsufficientBonusPromotionQuantity(purchaseProduct);
+    private PurchasedProduct checkInsufficientBonusPromotionQuantity(PurchasedProduct purchasedProduct, PromotionProductGroup promotionProductGroup) {
+        InsufficientBonusProductDto bonusProductDto = promotionProductGroup.checkInsufficientBonusPromotionQuantity(purchasedProduct);
 
         if (bonusProductDto == null) {
-            return purchaseProduct;
+            return purchasedProduct;
         }
 
         boolean confirmedAdditionalQuantity = getInsufficientBonusPromotionQuantity(bonusProductDto);
-        if (confirmedAdditionalQuantity) {
-            purchaseProduct.addQuantity(bonusProductDto.getQuantity());
+        if (!confirmedAdditionalQuantity) {
+            purchasedProduct.addTotalQuantity(bonusProductDto.getQuantity());
         }
 
-        return purchaseProduct;
+        return purchasedProduct;
     }
 
     private boolean getInsufficientBonusPromotionQuantity(InsufficientBonusProductDto insufficientBonusProductDto) {
@@ -106,20 +109,18 @@ public class StoreController {
         }
     }
 
-    private PurchaseProduct checkPromotionQuantityOverStock(PurchaseProduct purchaseProduct, PromotionProductGroup promotionProductGroup) {
-        PromotionQuantityOverStockDto overStockDto = promotionProductGroup.checkPromotionQuantityOverStock(purchaseProduct);
+    private PurchasedProduct checkPromotionQuantityOverStock(PurchasedProduct purchasedProduct, PromotionProductGroup promotionProductGroup) {
+        PromotionQuantityOverStockDto overStockDto = promotionProductGroup.checkPromotionQuantityOverStock(purchasedProduct);
         if (overStockDto == null) {
-            return purchaseProduct;
+            return purchasedProduct;
         }
 
         boolean confirmAdditionalQuantity = getPromotionQuantityOverStock(overStockDto);
         if (!confirmAdditionalQuantity) {
-            purchaseProduct.minusQuantity(overStockDto.getQuantity());
-            return purchaseProduct;
+            purchasedProduct.minusTotalQuantity(overStockDto.getQuantity());
+            return purchasedProduct;
         }
-
-        purchaseProduct.overStockAvailable(overStockDto.getQuantity());
-        return purchaseProduct;
+        return purchasedProduct;
     }
 
     private boolean getPromotionQuantityOverStock(PromotionQuantityOverStockDto promotionQuantityOverStockDto) {

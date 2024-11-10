@@ -16,22 +16,22 @@ public class PromotionProductGroup {
         this.totalStock = totalStock;
     }
 
-    public InsufficientBonusProductDto checkInsufficientBonusPromotionQuantity(PurchaseProduct purchaseProduct) {
+    public InsufficientBonusProductDto checkInsufficientBonusPromotionQuantity(PurchasedProduct purchaseProduct) {
         if (promotionProduct == null) {
             return null;
         }
 
-        Optional<InsufficientBonusProductDto> insufficientBonusProductDto = promotionProduct.checkInsufficientBonusPromotionQuantity(purchaseProduct.getQuantity());
+        Optional<InsufficientBonusProductDto> insufficientBonusProductDto = promotionProduct.checkInsufficientBonusPromotionQuantity(purchaseProduct.getTotalQuantity());
 
         return insufficientBonusProductDto.orElse(null);
 
     }
 
-    public PromotionQuantityOverStockDto checkPromotionQuantityOverStock(PurchaseProduct purchaseProduct) {
+    public PromotionQuantityOverStockDto checkPromotionQuantityOverStock(PurchasedProduct purchaseProduct) {
         if (promotionProduct == null) {
             return null;
         }
-        Optional<PromotionQuantityOverStockDto> promotionQuantityOverStockDto = promotionProduct.checkPromotionQuantityOverStock(purchaseProduct.getQuantity(), totalStock);
+        Optional<PromotionQuantityOverStockDto> promotionQuantityOverStockDto = promotionProduct.checkPromotionQuantityOverStock(purchaseProduct.getTotalQuantity(), totalStock);
 
         return promotionQuantityOverStockDto.orElse(null);
     }
