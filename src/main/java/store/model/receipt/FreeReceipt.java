@@ -12,7 +12,7 @@ public class FreeReceipt extends Receipt {
         totalCost = 0;
         totalQuantity = 0;
         for (PurchasedProduct purchasedProduct : purchasedProducts) {
-            TotalCostPerProduct totalCostPerProduct = new TotalCostPerProduct(purchasedProduct.getBuyingQuantity(), purchasedProduct.getBuyingQuantity() * purchasedProduct.getPrice());
+            TotalCostPerProduct totalCostPerProduct = new TotalCostPerProduct(purchasedProduct.getFreeQuantity(), purchasedProduct.getFreeQuantity() * purchasedProduct.getPrice());
             this.purchasedProducts.put(purchasedProduct.getName(), totalCostPerProduct);
             totalCost += purchasedProduct.getFreeQuantity() * purchasedProduct.getPrice();
             totalQuantity += purchasedProduct.getFreeQuantity();
