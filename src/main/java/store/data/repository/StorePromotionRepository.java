@@ -2,6 +2,7 @@ package store.data.repository;
 
 import store.data.entity.PromotionEntity;
 import store.exception.ErrorMessage;
+import store.util.PromotionParser;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -26,24 +27,9 @@ public class StorePromotionRepository implements StoreRepository {
         try (BufferedReader reader = createBufferedReader(PROMOTION_FILE_NAME)) {
             return reader.lines()
                     .skip(1)
-                    .map(this::parsePromotionLine)
+                    .map(PromotionParser::parsePromotionLine)
                     .collect(Collectors.toMap(PromotionEntity::getName, promotionEntity -> promotionEntity));
         }
     }
 
-    public PromotionEntity parsePromotionLine(String line) {
-        if (line == null || line.isEmpty()) {
-            throw new IllegalArgumentException(ErrorMessage.ETC_ERROR.getErrorMessage());
-        }
-        String[] parts = line.split(FILE_DELIMITER);
-        if (parts.length > 5) {
-            throw new IllegalArgumentException(ErrorMessage.INVALID_FILE_ERROR.getErrorMessage());
-        }
-        String name = parts[0];
-        String buy = parts[1];
-        String get = parts[2];
-        String startDate = parts[3];
-        String endDate = parts[4];
-        return new PromotionEntity(name, buy, get, startDate, endDate);
-    }
 }

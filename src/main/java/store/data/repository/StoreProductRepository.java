@@ -2,6 +2,7 @@ package store.data.repository;
 
 import store.data.entity.ProductEntity;
 import store.exception.ErrorMessage;
+import store.util.ProductParser;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -25,24 +26,10 @@ public class StoreProductRepository implements StoreRepository {
         try (BufferedReader reader = createBufferedReader(PRODUCT_FILE_NAME)) {
             return reader.lines()
                     .skip(1)
-                    .map(this::parseProductLine)
+                    .map(ProductParser::parseProductLine)
                     .collect(Collectors.toList());
         }
     }
 
-    public ProductEntity parseProductLine(String line) {
-        if (line == null || line.isEmpty()){
-            throw new IllegalArgumentException(ErrorMessage.ETC_ERROR.getErrorMessage());
-        }
-        String[] parts = line.split(FILE_DELIMITER);
-        if (parts.length != 4) {
-            throw new IllegalArgumentException(ErrorMessage.ETC_ERROR.getErrorMessage());
-        }
-        String name = parts[0];
-        String price = parts[1];
-        String quantity = parts[2];
-        String promotion = parts[3];
 
-        return new ProductEntity(name, price, quantity, promotion);
-    }
 }
