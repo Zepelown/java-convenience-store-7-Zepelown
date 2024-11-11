@@ -13,6 +13,7 @@ public class PurchaseProductFactory {
     }
 
     private List<String> splitProducts(String input) {
+        checkEmpty(input);
         String[] products = input.split(",");
         List<String> productList = new ArrayList<>();
         for (String product : products) {
@@ -41,5 +42,10 @@ public class PurchaseProductFactory {
         String name = parts[0];
         String quantity = parts[1];
         return new PurchaseProduct(name, quantity);
+    }
+    private void checkEmpty(String input){
+        if (input == null || input.isBlank()){
+            throw new IllegalArgumentException(ErrorMessage.INVALID_BUYING_PRODUCT_INPUT_FORMAT.getErrorMessage());
+        }
     }
 }
