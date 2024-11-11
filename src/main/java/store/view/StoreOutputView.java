@@ -16,12 +16,10 @@ import java.util.Optional;
 public class StoreOutputView {
     private final DecimalFormat decimalFormat = new DecimalFormat("#,##0원");
     private final DecimalFormat receiptDecimalFormat = new DecimalFormat("#,##0");
-    private final String PRODUCT_STOCK_NOTIFICATION = "안녕하세요. W편의점입니다.\n" +
-            "현재 보유하고 있는 상품입니다.";
-    private final String ERROR_MESSAGE_PREFIX = "[ERROR] ";
+
 
     public void printProductStockNotification() {
-        System.out.println(PRODUCT_STOCK_NOTIFICATION);
+        System.out.println(ViewConstants.PRODUCT_STOCK_NOTIFICATION);
     }
 
     public void printProductStock(HashMap<String, List<Product>> stock) {
@@ -32,19 +30,18 @@ public class StoreOutputView {
             printProductDetails(products, productName);
 
             if (isPromotionOnly(products)) {
-                Product product = products.get(0);
+                Product product = products.getFirst();
                 printEmptyProduct(productName, product.getPrice());
             }
         }
     }
 
     public void printErrorMessage(String errorMessage) {
-        System.out.println(ERROR_MESSAGE_PREFIX + errorMessage);
+        System.out.println(ViewConstants.ERROR_MESSAGE_PREFIX + errorMessage);
     }
 
     public void printReceipt(ProductTotalReceipt totalReceipt) {
-        System.out.println("===========W 편의점=============");
-        System.out.println("상품명\t\t수량\t금액");
+        System.out.println(ViewConstants.RECEIPT_HEADER);
         printCostReceipt(totalReceipt.getCostReceipt());
         printFreeReceipt(totalReceipt.getFreeReceipt());
         printTotalCost(totalReceipt);
@@ -59,39 +56,43 @@ public class StoreOutputView {
     }
 
     private void printFreeReceipt(FreeReceipt freeReceipt) {
-        System.out.println("===========증\t정=============");
+        System.out.println(ViewConstants.FREE_RECEIPT_HEADER);
         for (Map.Entry<String, TotalCostPerProduct> entry : freeReceipt.getProducts().entrySet()) {
             String productName = entry.getKey();
             TotalCostPerProduct totalCostPerProduct = entry.getValue();
             System.out.println(productName + "\t\t" + totalCostPerProduct.getQuantity() + "\t");
         }
-        System.out.println("==============================");
+        System.out.println(ViewConstants.RECEIPT_FOOTER);
     }
 
     private void printTotalCost(ProductTotalReceipt totalReceipt) {
-        System.out.println("총구매액\t\t" + totalReceipt.getTotalQuantity() + "\t" + receiptDecimalFormat.format(totalReceipt.getTotalCost()));
-        System.out.println("행사할인\t\t\t-" + receiptDecimalFormat.format(totalReceipt.getFreeCost()));
-        System.out.println("멤버십할인\t\t\t-" + receiptDecimalFormat.format(totalReceipt.getMemberDiscount()));
-        System.out.println("내실돈\t\t\t" + receiptDecimalFormat.format(totalReceipt.getFinalCost()));
+        System.out.println(ViewConstants.TOTAL_COST_PREFIX + totalReceipt.getTotalQuantity() + "\t" + receiptDecimalFormat.format(totalReceipt.getTotalCost()));
+        System.out.println(ViewConstants.FREE_COST_PREFIX + receiptDecimalFormat.format(totalReceipt.getFreeCost()));
+        System.out.println(ViewConstants.MEMBER_DISCOUNT_PREFIX+ receiptDecimalFormat.format(totalReceipt.getMemberDiscount()));
+        System.out.println(ViewConstants.FINAL_COST_PREFIX + receiptDecimalFormat.format(totalReceipt.getFinalCost()));
     }
 
     private void printProductDetails(List<Product> products, String productName) {
         for (Product product : products) {
-            StringBuilder result = new StringBuilder();
-            result.append("- ").append(productName)
-                    .append(" ").append(decimalFormat.format(product.getPrice()));
-
-            if (product.getStock() == 0) {
-                result.append(" 재고 없음");
-            }
-
-            if (product.getStock() > 0) {
-                result.append(" ").append(product.getStock()).append("개");
-            }
-
-            addPromotionInfo(result, product);
-            System.out.println(result);
+            printProductDetail(product);
         }
+    }
+
+    private void printProductDetail(Product product){
+        StringBuilder result = new StringBuilder();
+        result.append("- ").append(product.getName())
+                .append(" ").append(decimalFormat.format(product.getPrice()));
+
+        if (product.getStock() == 0) {
+            result.append(" ").append(ViewConstants.NO_STOCK_LABEL);
+        }
+
+        if (product.getStock() > 0) {
+            result.append(" ").append(product.getStock()).append("개");
+        }
+
+        addPromotionInfo(result, product);
+        System.out.println(result);
     }
 
     private void addPromotionInfo(StringBuilder result, Product product) {
@@ -116,7 +117,7 @@ public class StoreOutputView {
         StringBuilder result = new StringBuilder();
         result.append("- ").append(productName);
         result.append(" ").append(decimalFormat.format(price));
-        result.append(" ").append("재고 없음");
+        result.append(" ").append(ViewConstants.NO_STOCK_LABEL);
         System.out.println(result);
     }
 }
