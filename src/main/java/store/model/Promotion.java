@@ -37,6 +37,9 @@ public class Promotion {
         if (buy == 0) {
             return 0;
         }
+        if (buy+get == quantity){
+            return buy+get;
+        }
         int applicableSets = quantity / buy;
         return quantity + applicableSets * get;
     }
