@@ -78,20 +78,30 @@ public class StoreOutputView {
     private void printProductDetails(List<Product> products, String productName) {
         for (Product product : products) {
             StringBuilder result = new StringBuilder();
-            result.append("- ").append(productName);
-            result.append(" ").append(decimalFormat.format(product.getPrice()));
-            result.append(" ").append(product.getStock()).append("개");
+            result.append("- ").append(productName)
+                    .append(" ").append(decimalFormat.format(product.getPrice()));
 
-            String promotion = Optional.ofNullable(product.getPromotion())
-                    .map(Promotion::getName)
-                    .filter(p -> !"null".equalsIgnoreCase(p))
-                    .orElse("");
-
-            if (!promotion.isEmpty()) {
-                result.append(" ").append(promotion);
+            if (product.getStock() == 0) {
+                result.append(" 재고 없음");
             }
 
+            if (product.getStock() > 0) {
+                result.append(" ").append(product.getStock()).append("개");
+            }
+
+            addPromotionInfo(result, product);
             System.out.println(result);
+        }
+    }
+
+    private void addPromotionInfo(StringBuilder result, Product product) {
+        String promotion = Optional.ofNullable(product.getPromotion())
+                .map(Promotion::getName)
+                .filter(p -> !"null".equalsIgnoreCase(p))
+                .orElse("");
+
+        if (!promotion.isEmpty()) {
+            result.append(" ").append(promotion);
         }
     }
 
