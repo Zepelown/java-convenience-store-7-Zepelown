@@ -19,7 +19,7 @@ public class PromotionProductGroup {
     }
 
     public InsufficientBonusProductDto checkInsufficientBonusPromotionQuantity(PurchasedProduct purchaseProduct) {
-        if (promotionProduct == null) {
+        if (promotionProduct == null || !promotionProduct.isPromotionActive()) {
             return null;
         }
 
@@ -30,7 +30,7 @@ public class PromotionProductGroup {
     }
 
     public PromotionQuantityOverStockDto checkPromotionQuantityOverStock(PurchasedProduct purchaseProduct) {
-        if (promotionProduct == null) {
+        if (promotionProduct == null || !promotionProduct.isPromotionActive()) {
             return null;
         }
         Optional<PromotionQuantityOverStockDto> promotionQuantityOverStockDto = promotionProduct.checkPromotionQuantityOverStock(purchaseProduct.getTotalQuantity(), totalStock);
