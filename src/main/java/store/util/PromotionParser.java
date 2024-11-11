@@ -1,19 +1,15 @@
 package store.util;
 
 import store.data.entity.PromotionEntity;
-import store.exception.ErrorMessage;
 
 public class PromotionParser {
     private static final String FILE_DELIMITER = ",";
+
     public static PromotionEntity parsePromotionLine(String line) {
-        if (line == null || line.isEmpty()) {
-            throw new IllegalArgumentException(ErrorMessage.ETC_ERROR.getErrorMessage());
-        }
+        EntityValidator.validateString(line);
 
         String[] parts = line.split(FILE_DELIMITER);
-        if (parts.length > 5) {
-            throw new IllegalArgumentException(ErrorMessage.INVALID_FILE_ERROR.getErrorMessage());
-        }
+        EntityValidator.validateLength(parts.length, 5);
 
         String name = parts[0];
         String buy = parts[1];
