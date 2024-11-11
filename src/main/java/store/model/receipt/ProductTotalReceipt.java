@@ -5,6 +5,7 @@ import store.model.PurchasedProduct;
 import java.util.List;
 
 public class ProductTotalReceipt {
+    private static final int MAXIMUM_LIMIT_MEMBER_DISCOUNT = 8000;
     private final CostReceipt costReceipt;
     private final FreeReceipt freeReceipt;
     private final int totalCost;
@@ -41,7 +42,9 @@ public class ProductTotalReceipt {
         if (!costReceipt.isMemberShip()) {
             return 0;
         }
-        return (int) (totalCost * 0.3);
+
+        int memberDiscount = (int) (totalCost * 0.3);
+        return Math.min(memberDiscount, MAXIMUM_LIMIT_MEMBER_DISCOUNT);
     }
 
     public int getFreeCost() {
