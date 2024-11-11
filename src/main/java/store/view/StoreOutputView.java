@@ -4,7 +4,7 @@ import store.model.Product;
 import store.model.Promotion;
 import store.model.receipt.CostReceipt;
 import store.model.receipt.FreeReceipt;
-import store.model.receipt.ProductTotalReceipt;
+import store.model.receipt.TotalReceipt;
 import store.model.receipt.TotalCostPerProduct;
 
 import java.text.DecimalFormat;
@@ -40,7 +40,7 @@ public class StoreOutputView {
         System.out.println(ViewConstants.ERROR_MESSAGE_PREFIX + errorMessage);
     }
 
-    public void printReceipt(ProductTotalReceipt totalReceipt) {
+    public void printReceipt(TotalReceipt totalReceipt) {
         System.out.println(ViewConstants.RECEIPT_HEADER);
         printCostReceipt(totalReceipt.getCostReceipt());
         printFreeReceipt(totalReceipt.getFreeReceipt());
@@ -65,7 +65,7 @@ public class StoreOutputView {
         System.out.println(ViewConstants.RECEIPT_FOOTER);
     }
 
-    private void printTotalCost(ProductTotalReceipt totalReceipt) {
+    private void printTotalCost(TotalReceipt totalReceipt) {
         System.out.println(ViewConstants.TOTAL_COST_PREFIX + totalReceipt.getTotalQuantity() + "\t" + receiptDecimalFormat.format(totalReceipt.getTotalCost()));
         System.out.println(ViewConstants.FREE_COST_PREFIX + receiptDecimalFormat.format(totalReceipt.getFreeCost()));
         System.out.println(ViewConstants.MEMBER_DISCOUNT_PREFIX+ receiptDecimalFormat.format(totalReceipt.getMemberDiscount()));

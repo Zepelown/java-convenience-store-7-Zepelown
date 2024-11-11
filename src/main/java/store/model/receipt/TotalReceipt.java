@@ -4,14 +4,14 @@ import store.model.PurchasedProduct;
 
 import java.util.List;
 
-public class ProductTotalReceipt {
+public class TotalReceipt {
     private static final int MAXIMUM_LIMIT_MEMBER_DISCOUNT = 8000;
     private final CostReceipt costReceipt;
     private final FreeReceipt freeReceipt;
     private final int totalCost;
     private final int freeCost;
 
-    public ProductTotalReceipt(List<PurchasedProduct> purchasedProducts, boolean isMemberShip) {
+    public TotalReceipt(List<PurchasedProduct> purchasedProducts, boolean isMemberShip) {
         costReceipt = new CostReceipt(purchasedProducts, isMemberShip);
         freeReceipt = new FreeReceipt(purchasedProducts);
         this.totalCost = costReceipt.totalCost;

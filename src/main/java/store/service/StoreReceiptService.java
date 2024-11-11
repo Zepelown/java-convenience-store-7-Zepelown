@@ -1,13 +1,13 @@
 package store.service;
 
 import store.model.PurchasedProduct;
-import store.model.receipt.ProductTotalReceipt;
+import store.model.receipt.TotalReceipt;
 
 import java.util.List;
 
 public class StoreReceiptService {
-    public ProductTotalReceipt calculateReceipt(List<PurchasedProduct> purchasedProducts, boolean isMembership) {
-        return new ProductTotalReceipt(purchasedProducts, isMembership);
+    public TotalReceipt calculateReceipt(List<PurchasedProduct> purchasedProducts, boolean isMembership) {
+        return new TotalReceipt(purchasedProducts, isMembership);
     }
 
 }

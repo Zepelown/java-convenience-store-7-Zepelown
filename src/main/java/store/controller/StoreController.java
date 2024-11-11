@@ -6,7 +6,7 @@ import store.dto.InsufficientBonusProductDto;
 import store.dto.PromotionQuantityOverStockDto;
 import store.exception.ErrorMessage;
 import store.model.*;
-import store.model.receipt.ProductTotalReceipt;
+import store.model.receipt.TotalReceipt;
 import store.service.StoreReceiptService;
 import store.service.StoreStockService;
 import store.util.YesNoValidator;
@@ -78,8 +78,8 @@ public class StoreController {
     }
     private void finalizePurchasingProduct(List<PurchasedProduct> purchasedProducts) {
         boolean isMemberShip = getMemberShipConfirm();
-        ProductTotalReceipt productTotalReceipt = storeReceiptService.calculateReceipt(purchasedProducts, isMemberShip);
-        storeOutputView.printReceipt(productTotalReceipt);
+        TotalReceipt totalReceipt = storeReceiptService.calculateReceipt(purchasedProducts, isMemberShip);
+        storeOutputView.printReceipt(totalReceipt);
 
         if (getRetryConfirm()) {
             start();
