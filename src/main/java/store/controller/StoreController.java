@@ -108,8 +108,8 @@ public class StoreController {
         }
 
         boolean confirmedAdditionalQuantity = getInsufficientBonusPromotionQuantity(bonusProductDto);
-        if (!confirmedAdditionalQuantity) {
-            purchasedProduct.addTotalQuantity(bonusProductDto.getQuantity());
+        if (confirmedAdditionalQuantity) {
+            purchasedProduct.addFreeQuantity(bonusProductDto.getQuantity());
         }
 
         return purchasedProduct;
@@ -134,7 +134,7 @@ public class StoreController {
 
         boolean confirmAdditionalQuantity = getPromotionQuantityOverStock(overStockDto);
         if (!confirmAdditionalQuantity) {
-            purchasedProduct.minusTotalQuantity(overStockDto.getQuantity());
+            purchasedProduct.minusBuyingQuantity(overStockDto.getQuantity());
             return purchasedProduct;
         }
         return purchasedProduct;

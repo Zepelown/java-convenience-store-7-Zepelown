@@ -9,8 +9,6 @@ import java.util.Map;
 public class FreeReceipt extends Receipt {
     public FreeReceipt(List<PurchasedProduct> purchasedProducts) {
         this.purchasedProducts = new HashMap<>();
-        totalCost = 0;
-        totalQuantity = 0;
         for (PurchasedProduct purchasedProduct : purchasedProducts) {
             TotalCostPerProduct totalCostPerProduct = new TotalCostPerProduct(purchasedProduct.getFreeQuantity(), purchasedProduct.getFreeQuantity() * purchasedProduct.getPrice());
             this.purchasedProducts.put(purchasedProduct.getName(), totalCostPerProduct);

@@ -36,9 +36,14 @@ public class PurchasedProduct {
         return totalQuantity;
     }
 
-    public void addTotalQuantity(int quantity) {
+    public void addFreeQuantity(int quantity) {
         totalQuantity += quantity;
-        calculateTotalQuantities();
+        freeQuantity += quantity;
+    }
+
+    public void minusBuyingQuantity(int quantity){
+        totalQuantity -= quantity;
+        buyingQuantity -= quantity;
     }
 
     public void minusTotalQuantity(int quantity) {
