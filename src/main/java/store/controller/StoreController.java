@@ -90,7 +90,7 @@ public class StoreController {
         while (true) {
             try {
                 List<Product> sameProductNameStocks = storeStockService.getSameProductNameStocks(purchaseProduct);
-                PromotionProductGroup promotionProductGroup = storeStockService.separatePromotion(sameProductNameStocks);
+                PromotionProductGroup promotionProductGroup = storeStockService.separateProductByPromotion(sameProductNameStocks);
                 storeStockService.checkProductStock(purchaseProduct, promotionProductGroup);
                 return promotionProductGroup;
             } catch (IllegalArgumentException e) {

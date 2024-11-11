@@ -40,20 +40,11 @@ public class StoreStockService {
         return purchasedProduct;
     }
 
-    public PromotionProductGroup separatePromotion(List<Product> checkedProductStock) {
-        Product promotionProduct = null;
-        Product nonPromotionProduct = null;
-        int totalStock = 0;
+    public PromotionProductGroup separateProductByPromotion(List<Product> checkedProductStock) {
+        Product promotionProduct = findPromotionProduct(checkedProductStock);
+        Product nonPromotionProduct = findNonPromotionProduct(checkedProductStock);
+        int totalStock = calculateTotalStock(checkedProductStock);
 
-        for (Product product : checkedProductStock) {
-            if (product.isPromotionActive()) {
-                promotionProduct = product;
-                totalStock += product.getStock();
-                continue;
-            }
-            nonPromotionProduct = product;
-            totalStock += product.getStock();
-        }
         return new PromotionProductGroup(promotionProduct, nonPromotionProduct, totalStock);
     }
 
@@ -105,5 +96,31 @@ public class StoreStockService {
                 product.reduceStock(quantity);
             }
         }
+    }
+
+    private Product findPromotionProduct(List<Product> checkedProductStock) {
+        for (Product product : checkedProductStock) {
+            if (product.isPromotionActive()) {
+                return product;
+            }
+        }
+        return null;
+    }
+
+    private Product findNonPromotionProduct(List<Product> checkedProductStock) {
+        for (Product product : checkedProductStock) {
+            if (!product.isPromotionActive()) {
+                return product;
+            }
+        }
+        return null;
+    }
+
+    private int calculateTotalStock(List<Product> checkedProductStock) {
+        int totalStock = 0;
+        for (Product product : checkedProductStock) {
+            totalStock += product.getStock();
+        }
+        return totalStock;
     }
 }
