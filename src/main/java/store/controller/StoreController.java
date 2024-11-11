@@ -43,37 +43,39 @@ public class StoreController {
 
         List<PurchaseProduct> productsToBuy = getProductsToBuy();
 
-        List<PurchasedProduct> purchasedProducts = new ArrayList<>();
-        for (PurchaseProduct purchaseProduct : productsToBuy) {
-            purchasedProducts.add(processPurchaseProduct(purchaseProduct));
-        }
+        List<PurchasedProduct> purchasedProducts = processPurchaseProducts(productsToBuy);
 
         finalizePurchasingProduct(purchasedProducts);
     }
 
     private List<PurchaseProduct> getProductsToBuy() {
-        while (true) {
-            try {
-                String userInput = storeInputView.getProductsToBuy();
-                return purchaseProductFactory.parsePurchaseProduct(userInput);
-            } catch (IllegalArgumentException e) {
-                storeOutputView.printErrorMessage(e.getMessage());
-            }
+        try{
+            String productsToBuyInput = storeInputView.getProductsToBuy();
+            return purchaseProductFactory.parsePurchaseProduct(productsToBuyInput);
+        } catch (IllegalArgumentException e){
+            storeOutputView.printErrorMessage(e.getMessage());
+            return getProductsToBuy();
         }
+    }
+
+    private List<PurchasedProduct> processPurchaseProducts(List<PurchaseProduct> productsToBuy) {
+        List<PurchasedProduct> purchasedProducts = new ArrayList<>();
+        for (PurchaseProduct purchaseProduct : productsToBuy) {
+            PurchasedProduct purchasedProduct = processPurchaseProduct(purchaseProduct);
+            purchasedProducts.add(purchasedProduct);
+        }
+        return purchasedProducts;
     }
 
     private PurchasedProduct processPurchaseProduct(PurchaseProduct purchaseProduct) {
         PromotionProductGroup promotionProductGroup = getPurchasableProducts(purchaseProduct);
         PurchasedProduct purchasedProduct = new PurchasedProduct(purchaseProduct.getName(), purchaseProduct.getQuantity(), 0, 0, promotionProductGroup.getProductCost(), promotionProductGroup.getProductPromotion());
 
-        PurchasedProduct checkedPurchasedProduct = checkInsufficientBonusPromotionQuantity(purchasedProduct, promotionProductGroup);
+        purchasedProduct = checkInsufficientBonusPromotionQuantity(purchasedProduct, promotionProductGroup);
+        purchasedProduct = checkPromotionQuantityOverStock(purchasedProduct, promotionProductGroup);
 
-        checkedPurchasedProduct = checkPromotionQuantityOverStock(checkedPurchasedProduct, promotionProductGroup);
-
-
-        return storeStockService.buyProduct(checkedPurchasedProduct, promotionProductGroup);
+        return storeStockService.buyProduct(purchasedProduct, promotionProductGroup);
     }
-
     private void finalizePurchasingProduct(List<PurchasedProduct> purchasedProducts) {
         boolean isMemberShip = getMemberShipConfirm();
         ProductTotalReceipt productTotalReceipt = storeReceiptService.calculateReceipt(purchasedProducts, isMemberShip);
