@@ -20,6 +20,7 @@ public class PromotionEntityValidationTest {
     }
 
     @ParameterizedTest
+    @NullAndEmptySource
     @ValueSource(strings = {"1,2,3,4,5,6","반짝할인,1,1,2024-11,2024-11","반짝할인,-1,1,2024-11-01,2024-11-30","반짝할인,1,-1,2024-11-01,2024-11-30"})
     public void 프로모션_파일_입력은_양식을_지키지_못하면_실패한다(String input){
         Assertions.assertThrows(IllegalArgumentException.class, () -> {

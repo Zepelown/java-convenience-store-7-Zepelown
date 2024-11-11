@@ -36,6 +36,9 @@ public class StorePromotionRepository implements StoreRepository {
     }
 
     public PromotionEntity parsePromotionLine(String line) {
+        if (line == null || line.isEmpty()){
+            throw new IllegalArgumentException(ErrorMessage.ETC_ERROR.getErrorMessage());
+        }
         String[] parts = line.split(FILE_DELIMITER);
         if (parts.length > 5) {
             throw new IllegalArgumentException(ErrorMessage.INVALID_FILE_ERROR.getErrorMessage());
