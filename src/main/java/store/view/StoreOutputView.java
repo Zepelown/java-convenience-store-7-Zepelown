@@ -33,6 +33,4 @@ public class StoreOutputView {
     public void printErrorMessage(String errorMessage) {
         System.out.println(ERROR_MESSAGE_PREFIX + errorMessage);
     }
-
-
 }

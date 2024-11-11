@@ -7,6 +7,7 @@ import store.dto.ProductDto;
 import store.dto.PromotionQuantityOverStockDto;
 import store.exception.ErrorMessage;
 import store.model.*;
+import store.service.StoreReceiptService;
 import store.service.StoreStockService;
 import store.util.YesNoValidator;
 import store.view.StoreInputView;
@@ -22,6 +23,7 @@ public class StoreController {
     private final StoreOutputView storeOutputView;
     private final PurchaseProductFactory purchaseProductFactory = new PurchaseProductFactory();
     private final StoreStockService storeStockService;
+    private final StoreReceiptService storeReceiptService;
 
     public StoreController(StoreProductRepository storeProductRepository, StorePromotionRepository storePromotionRepository, StoreInputView storeInputView, StoreOutputView storeOutputView) {
         this.storeProductRepository = storeProductRepository;
@@ -30,6 +32,7 @@ public class StoreController {
         this.storeOutputView = storeOutputView;
 
         storeStockService = new StoreStockService(storeProductRepository, storePromotionRepository);
+        storeReceiptService = new StoreReceiptService();
     }
 
     public void start() {
@@ -44,10 +47,7 @@ public class StoreController {
             purchasedProducts.add(processPurchaseProduct(purchaseProduct));
         }
 
-        if (getMemberShipConfirm()){
-            
-        }
-
+        finalizePurchasingProduct(purchasedProducts);
     }
 
     private List<PurchaseProduct> getProductsToBuy() {
@@ -74,7 +74,8 @@ public class StoreController {
     }
 
     private void finalizePurchasingProduct(List<PurchasedProduct> purchasedProducts) {
-
+        boolean isMemberShip = getMemberShipConfirm();
+        storeReceiptService.calculateReceipt(purchasedProducts,isMemberShip);
     }
 
     private PromotionProductGroup getPurchasableProducts(PurchaseProduct purchaseProduct) {
