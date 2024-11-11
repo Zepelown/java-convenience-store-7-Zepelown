@@ -4,25 +4,28 @@ import store.model.PurchasedProduct;
 
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class CostReceipt extends Receipt {
     private final boolean isMemberShip;
     public CostReceipt(List<PurchasedProduct> purchasedProducts, boolean isMemberShip) {
         this.isMemberShip = isMemberShip;
-        HashMap<String, Integer> costProducts = new HashMap<>();
-        totalCost = 0;
-        totalQuantity = 0;
+        this.purchasedProducts = new HashMap<>();
         for (PurchasedProduct purchasedProduct : purchasedProducts) {
-            costProducts.put(purchasedProduct.getName(), purchasedProduct.getBuyingQuantity());
+            TotalCostPerProduct totalCostPerProduct = new TotalCostPerProduct(purchasedProduct.getBuyingQuantity(),purchasedProduct.getBuyingQuantity() * purchasedProduct.getPrice());
+            this.purchasedProducts.put(purchasedProduct.getName(), totalCostPerProduct);
             totalCost += purchasedProduct.getBuyingQuantity() * purchasedProduct.getPrice();
             totalQuantity += purchasedProduct.getBuyingQuantity();
         }
-        if (isMemberShip) {
-            totalCost *= 0.7;
-        }
     }
-
+    public boolean isMemberShip(){
+        return isMemberShip;
+    }
     public int getTotalQuantity() {
         return totalQuantity;
     }
+    public Map<String, TotalCostPerProduct> getProducts(){
+        return purchasedProducts;
+    }
+
 }

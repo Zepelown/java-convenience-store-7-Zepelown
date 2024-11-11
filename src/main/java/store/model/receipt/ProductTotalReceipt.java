@@ -17,7 +17,7 @@ public class ProductTotalReceipt {
         this.freeCost = freeReceipt.totalCost;
     }
 
-    public Receipt getCostReceipt() {
+    public CostReceipt getCostReceipt() {
         return costReceipt;
     }
 
@@ -25,11 +25,11 @@ public class ProductTotalReceipt {
         return costReceipt.getTotalQuantity();
     }
 
-    public int getTotalQuantity(){
+    public int getTotalQuantity() {
         return costReceipt.totalQuantity + freeReceipt.totalQuantity;
     }
 
-    public Receipt getFreeReceipt() {
+    public FreeReceipt getFreeReceipt() {
         return freeReceipt;
     }
 
@@ -37,7 +37,21 @@ public class ProductTotalReceipt {
         return totalCost;
     }
 
+    public int getMemberDiscount() {
+        if (!costReceipt.isMemberShip()) {
+            return 0;
+        }
+        return (int) (totalCost * 0.3);
+    }
+
     public int getFreeCost() {
         return freeCost;
+    }
+
+    public int getFinalCost(){
+        if (!costReceipt.isMemberShip()) {
+            return totalCost;
+        }
+        return (int) (totalCost * 0.7);
     }
 }
