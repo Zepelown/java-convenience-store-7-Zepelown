@@ -1,6 +1,7 @@
 package store.data.repository;
 
 import store.data.entity.ProductEntity;
+import store.exception.ErrorMessage;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -30,15 +31,17 @@ public class StoreProductRepository implements StoreRepository {
     }
 
     public ProductEntity parseProductLine(String line) {
+        if (line == null || line.isEmpty()){
+            throw new IllegalArgumentException(ErrorMessage.ETC_ERROR.getErrorMessage());
+        }
         String[] parts = line.split(FILE_DELIMITER);
+        if (parts.length != 4) {
+            throw new IllegalArgumentException(ErrorMessage.ETC_ERROR.getErrorMessage());
+        }
         String name = parts[0];
         String price = parts[1];
         String quantity = parts[2];
-        String promotion = null;
-
-        if (parts.length > 3 && !parts[3].isEmpty()) {
-            promotion = parts[3];
-        }
+        String promotion = parts[3];
 
         return new ProductEntity(name, price, quantity, promotion);
     }
