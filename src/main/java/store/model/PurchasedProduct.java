@@ -3,7 +3,7 @@ package store.model;
 public class PurchasedProduct {
     private final String name;
     private final int price;
-    private final Promotion promotion;
+    private Promotion promotion;
     private int totalQuantity;
     private int buyingQuantity;
     private int freeQuantity;
@@ -15,6 +15,9 @@ public class PurchasedProduct {
         this.freeQuantity = freeQuantity;
         this.price = price;
         this.promotion = promotion;
+        if (this.promotion  == null){
+            this.promotion = new Promotion("null", 0, 0, null, null);
+        }
         calculateTotalQuantities();
     }
 

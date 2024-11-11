@@ -42,7 +42,7 @@ public class StoreStockService {
 
     public PromotionProductGroup separatePromotion(List<Product> checkedProductStock) {
         Product promotionProduct = null;
-        ArrayList<Product> nonPromotionProducts = new ArrayList<>();
+        Product nonPromotionProduct = null;
         int totalStock = 0;
 
         for (Product product : checkedProductStock) {
@@ -51,10 +51,10 @@ public class StoreStockService {
                 totalStock += product.getStock();
                 continue;
             }
-            nonPromotionProducts.add(product);
+            nonPromotionProduct = product;
             totalStock += product.getStock();
         }
-        return new PromotionProductGroup(promotionProduct, nonPromotionProducts, totalStock);
+        return new PromotionProductGroup(promotionProduct, nonPromotionProduct, totalStock);
     }
 
     public List<Product> getSameProductNameStocks(PurchaseProduct purchaseProduct) {

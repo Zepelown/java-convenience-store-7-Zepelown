@@ -34,6 +34,9 @@ public class Promotion {
     }
 
     public int calculatePromotionQuantity(int quantity) {
+        if (buy == 0){
+            return 0;
+        }
         int applicableSets = quantity / buy;
         return quantity + applicableSets * get;
     }

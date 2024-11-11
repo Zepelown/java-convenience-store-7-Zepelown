@@ -1,7 +1,7 @@
 package store.view;
 
-import store.dto.ProductDto;
 import store.model.Product;
+import store.model.Promotion;
 import store.model.receipt.CostReceipt;
 import store.model.receipt.FreeReceipt;
 import store.model.receipt.TotalCostPerProduct;
@@ -28,19 +28,28 @@ public class StoreOutputView {
         for (Map.Entry<String, List<Product>> entry : stock.entrySet()) {
             String productName = entry.getKey();
             List<Product> products = entry.getValue();
-
             for (Product product : products) {
                 StringBuilder result = new StringBuilder();
                 result.append("- ").append(productName);
                 result.append(" ").append(decimalFormat.format(product.getPrice()));
                 result.append(" ").append(product.getStock()).append("개");
 
-                String promotion = Optional.ofNullable(product.getPromotion().getName())
+                String promotion = Optional.ofNullable(product.getPromotion())
+                        .map(Promotion::getName)
                         .filter(p -> !"null".equalsIgnoreCase(p))
-                        .orElse("재고없음");
-                result.append(" ").append(promotion);
+                        .orElse("");
+
+                if (!promotion.isEmpty()) {
+                    result.append(" ").append(promotion);
+                }
 
                 System.out.println(result);
+            }
+            if (products.size() == 1){
+                Product product = products.getFirst();
+                if (product.getPromotion().isPromotionApplicable()){
+                    printEmptyProduct(productName,product.getPrice());
+                }
             }
         }
     }
@@ -78,5 +87,13 @@ public class StoreOutputView {
         System.out.println("행사할인\t\t\t-"+receiptDecimalFormat.format(totalReceipt.getFreeCost()));
         System.out.println("멤버십할인\t\t\t-"+receiptDecimalFormat.format(totalReceipt.getMemberDiscount()));
         System.out.println("내실돈\t\t\t"+receiptDecimalFormat.format(totalReceipt.getFinalCost()));
+    }
+
+    private void printEmptyProduct(String productName, int price){
+        StringBuilder result = new StringBuilder();
+        result.append("- ").append(productName);
+        result.append(" ").append(decimalFormat.format(price));
+        result.append(" ").append("재고 없음");
+        System.out.println(result);
     }
 }

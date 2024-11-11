@@ -3,16 +3,18 @@ package store.model;
 import store.dto.InsufficientBonusProductDto;
 import store.dto.PromotionQuantityOverStockDto;
 
-import java.util.ArrayList;
 import java.util.Optional;
 
 public class PromotionProductGroup {
-    private final Product promotionProduct;
-    private final ArrayList<Product> nonPromotionProducts;
+    private  Product promotionProduct;
+    private final Product nonPromotionProduct;
     private final int totalStock;
-    public PromotionProductGroup(Product promotionProduct, ArrayList<Product> nonPromotionProducts, int totalStock) {
+    public PromotionProductGroup(Product promotionProduct, Product nonPromotionProduct, int totalStock) {
         this.promotionProduct = promotionProduct;
-        this.nonPromotionProducts = nonPromotionProducts;
+        if (this.promotionProduct == null){
+            this.promotionProduct = new Product("null",0,0, new Promotion("null", 0, 0, null, null));
+        }
+        this.nonPromotionProduct = nonPromotionProduct;
         this.totalStock = totalStock;
     }
 
@@ -39,14 +41,14 @@ public class PromotionProductGroup {
     public Product getPromotionProduct() {
         return promotionProduct;
     }
+    public int getProductCost(){return nonPromotionProduct.getPrice();}
 
-    public ArrayList<Product> getNonPromotionProducts() {
-        return nonPromotionProducts;
+    public Promotion getProductPromotion() {
+        if (promotionProduct == null){
+            return null;
+        }
+        return promotionProduct.getPromotion();
     }
-
-    public int getProductCost(){return nonPromotionProducts.getFirst().getPrice();}
-
-    public Promotion getProductPromotion() {return promotionProduct.getPromotion();}
 
     public int getTotalStock() {
         return totalStock;
