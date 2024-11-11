@@ -28,28 +28,12 @@ public class StoreOutputView {
         for (Map.Entry<String, List<Product>> entry : stock.entrySet()) {
             String productName = entry.getKey();
             List<Product> products = entry.getValue();
-            for (Product product : products) {
-                StringBuilder result = new StringBuilder();
-                result.append("- ").append(productName);
-                result.append(" ").append(decimalFormat.format(product.getPrice()));
-                result.append(" ").append(product.getStock()).append("개");
 
-                String promotion = Optional.ofNullable(product.getPromotion())
-                        .map(Promotion::getName)
-                        .filter(p -> !"null".equalsIgnoreCase(p))
-                        .orElse("");
+            printProductDetails(products, productName);
 
-                if (!promotion.isEmpty()) {
-                    result.append(" ").append(promotion);
-                }
-
-                System.out.println(result);
-            }
-            if (products.size() == 1){
-                Product product = products.getFirst();
-                if (product.getPromotion().isPromotionApplicable()){
-                    printEmptyProduct(productName,product.getPrice());
-                }
+            if (isPromotionOnly(products)) {
+                Product product = products.get(0);
+                printEmptyProduct(productName, product.getPrice());
             }
         }
     }
@@ -87,6 +71,33 @@ public class StoreOutputView {
         System.out.println("행사할인\t\t\t-"+receiptDecimalFormat.format(totalReceipt.getFreeCost()));
         System.out.println("멤버십할인\t\t\t-"+receiptDecimalFormat.format(totalReceipt.getMemberDiscount()));
         System.out.println("내실돈\t\t\t"+receiptDecimalFormat.format(totalReceipt.getFinalCost()));
+    }
+
+    private void printProductDetails(List<Product> products, String productName) {
+        for (Product product : products) {
+            StringBuilder result = new StringBuilder();
+            result.append("- ").append(productName);
+            result.append(" ").append(decimalFormat.format(product.getPrice()));
+            result.append(" ").append(product.getStock()).append("개");
+
+            String promotion = Optional.ofNullable(product.getPromotion())
+                    .map(Promotion::getName)
+                    .filter(p -> !"null".equalsIgnoreCase(p))
+                    .orElse("");
+
+            if (!promotion.isEmpty()) {
+                result.append(" ").append(promotion);
+            }
+
+            System.out.println(result);
+        }
+    }
+
+    private boolean isPromotionOnly(List<Product> products) {
+        if (products.size() == 1 && products.getFirst().getPromotion().isPromotionApplicable()){
+            return true;
+        }
+        return false;
     }
 
     private void printEmptyProduct(String productName, int price){
