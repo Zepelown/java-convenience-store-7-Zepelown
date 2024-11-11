@@ -1,12 +1,14 @@
 package store.view;
 
 import store.dto.ProductDto;
+import store.model.Product;
 import store.model.receipt.CostReceipt;
 import store.model.receipt.FreeReceipt;
 import store.model.receipt.TotalCostPerProduct;
 import store.model.receipt.ProductTotalReceipt;
 
 import java.text.DecimalFormat;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -22,17 +24,24 @@ public class StoreOutputView {
         System.out.println(PRODUCT_STOCK_NOTIFICATION);
     }
 
-    public void printProductStock(List<ProductDto> products) {
-        for (ProductDto product : products) {
-            StringBuilder result = new StringBuilder();
-            result.append("- " + product.getName());
-            result.append(" " + decimalFormat.format(product.getPrice()));
-            result.append(" " + product.getQuantity() + "개");
-            String promotion = Optional.ofNullable(product.getPromotion())
-                    .filter(p -> !"null".equalsIgnoreCase(p))
-                    .orElse("재고없음");
-            result.append(" ").append(promotion);
-            System.out.println(result);
+    public void printProductStock(HashMap<String, List<Product>> stock) {
+        for (Map.Entry<String, List<Product>> entry : stock.entrySet()) {
+            String productName = entry.getKey();
+            List<Product> products = entry.getValue();
+
+            for (Product product : products) {
+                StringBuilder result = new StringBuilder();
+                result.append("- ").append(productName);
+                result.append(" ").append(decimalFormat.format(product.getPrice()));
+                result.append(" ").append(product.getStock()).append("개");
+
+                String promotion = Optional.ofNullable(product.getPromotion().getName())
+                        .filter(p -> !"null".equalsIgnoreCase(p))
+                        .orElse("재고없음");
+                result.append(" ").append(promotion);
+
+                System.out.println(result);
+            }
         }
     }
 

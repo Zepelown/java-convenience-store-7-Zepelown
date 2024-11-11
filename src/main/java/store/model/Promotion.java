@@ -45,9 +45,12 @@ public class Promotion {
 
         int remainingQuantity = totalQuantity % (buy + get);
 
-        // 남은 수량이 있을 때는 남은 수량만큼 유료 구매로 추가
         paidQuantity += remainingQuantity;
 
         return new int[] {paidQuantity, freeQuantity};
+    }
+
+    public String getName() {
+        return name;
     }
 }

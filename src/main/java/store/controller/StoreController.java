@@ -15,6 +15,7 @@ import store.view.StoreInputView;
 import store.view.StoreOutputView;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 public class StoreController {
@@ -38,7 +39,7 @@ public class StoreController {
 
     public void start() {
         storeOutputView.printProductStockNotification();
-        List<ProductDto> products = storeStockService.loadProductStock();
+        HashMap<String, List<Product>> products = storeStockService.loadProductStock();
         storeOutputView.printProductStock(products);
 
         List<PurchaseProduct> productsToBuy = getProductsToBuy();
@@ -78,6 +79,10 @@ public class StoreController {
         boolean isMemberShip = getMemberShipConfirm();
         ProductTotalReceipt productTotalReceipt = storeReceiptService.calculateReceipt(purchasedProducts, isMemberShip);
         storeOutputView.printReceipt(productTotalReceipt);
+
+        if (getRetryConfirm()){
+            start();
+        }
     }
 
     private PromotionProductGroup getPurchasableProducts(PurchaseProduct purchaseProduct) {
@@ -150,6 +155,17 @@ public class StoreController {
             try {
                 String memberShipConfirm = storeInputView.getMemberShipConfirm();
                 return YesNoValidator.validateYN(memberShipConfirm);
+            } catch (IllegalArgumentException e) {
+                storeOutputView.printErrorMessage(ErrorMessage.ETC_ERROR.getErrorMessage());
+            }
+        }
+    }
+
+    private boolean getRetryConfirm(){
+        while (true) {
+            try {
+                String retryConfirm = storeInputView.getRetryConfirm();
+                return YesNoValidator.validateYN(retryConfirm);
             } catch (IllegalArgumentException e) {
                 storeOutputView.printErrorMessage(ErrorMessage.ETC_ERROR.getErrorMessage());
             }

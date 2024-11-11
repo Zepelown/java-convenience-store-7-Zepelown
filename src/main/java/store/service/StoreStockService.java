@@ -3,14 +3,12 @@ package store.service;
 import store.data.entity.ProductEntity;
 import store.data.repository.StoreProductRepository;
 import store.data.repository.StorePromotionRepository;
-import store.dto.ProductDto;
 import store.exception.ErrorMessage;
 import store.model.*;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.stream.Collectors;
 
 public class StoreStockService {
     private final StoreProductRepository storeProductRepository;
@@ -23,21 +21,20 @@ public class StoreStockService {
         initStockSetting();
     }
 
-    public List<ProductDto> loadProductStock() {
-        return storeProductRepository.loadProductStock().stream()
-                .map(ProductEntity::toDto)
-                .collect(Collectors.toList());
+    public HashMap<String, List<Product>> loadProductStock() {
+        return stock;
     }
 
     public PurchasedProduct buyProduct(PurchasedProduct purchasedProduct, PromotionProductGroup promotionProductGroup) {
         int promotionStock = promotionProductGroup.getPromotionProduct().getStock();
         int requiredStock = purchasedProduct.getTotalQuantity();
 
-        reducePromotionStock(purchasedProduct.getName(), promotionStock);
+
         if (requiredStock <= promotionStock) {
+            reducePromotionStock(purchasedProduct.getName(), requiredStock);
             return purchasedProduct;
         }
-
+        reducePromotionStock(purchasedProduct.getName(), promotionStock);
         int remainingBuyingStock = purchasedProduct.getTotalQuantity() - promotionStock;
         reduceNonPromotionStock(purchasedProduct.getName(), remainingBuyingStock);
         return purchasedProduct;
