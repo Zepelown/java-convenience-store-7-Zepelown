@@ -29,7 +29,7 @@ public class StoreProductRepository implements StoreRepository {
         }
     }
 
-    private ProductEntity parseProductLine(String line) {
+    public ProductEntity parseProductLine(String line) {
         String[] parts = line.split(FILE_DELIMITER);
         String name = parts[0];
         String price = parts[1];

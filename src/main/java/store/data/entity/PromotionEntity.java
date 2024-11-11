@@ -18,6 +18,7 @@ public class PromotionEntity {
         this.get = EntityValidator.parseInt(get);
         this.startDate = EntityValidator.parseDate(startDate);
         this.endDate = EntityValidator.parseDate(endDate);
+        validate();
     }
 
     public String getName() {

@@ -1,6 +1,7 @@
 package store.data.repository;
 
 import store.data.entity.PromotionEntity;
+import store.exception.ErrorMessage;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -34,8 +35,11 @@ public class StorePromotionRepository implements StoreRepository {
         }
     }
 
-    private PromotionEntity parsePromotionLine(String line) {
+    public PromotionEntity parsePromotionLine(String line) {
         String[] parts = line.split(FILE_DELIMITER);
+        if (parts.length > 5) {
+            throw new IllegalArgumentException(ErrorMessage.INVALID_FILE_ERROR.getErrorMessage());
+        }
         String name = parts[0];
         String buy = parts[1];
         String get = parts[2];

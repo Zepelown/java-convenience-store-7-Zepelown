@@ -8,6 +8,7 @@ import java.time.format.DateTimeParseException;
 
 public class EntityValidator {
     private static final String PROMOTION_DATE_FORMAT = "yyyy-MM-dd";
+    private static final String KOREA_AND_ENGLISH_REGEX = "/^[ㄱ-ㅎ가-힣a-zA-Z0-9]+$/";
 
     public static int parseInt(String input) {
         try {
@@ -18,7 +19,13 @@ public class EntityValidator {
     }
 
     public static void validateString(String input) {
-        if (input.isBlank()) {
+        if (input == null || input.isBlank()) {
+            throw new IllegalArgumentException(ErrorMessage.INVALID_FILE_ERROR.getErrorMessage());
+        }
+    }
+
+    public static void validateKoreanAndEnglishOnly(String input) {
+        if (input == null || !input.matches(KOREA_AND_ENGLISH_REGEX)){
             throw new IllegalArgumentException(ErrorMessage.INVALID_FILE_ERROR.getErrorMessage());
         }
     }
