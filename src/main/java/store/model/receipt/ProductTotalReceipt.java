@@ -48,7 +48,7 @@ public class ProductTotalReceipt {
         return freeCost;
     }
 
-    public int getFinalCost(){
+    public int getFinalCost() {
         if (!costReceipt.isMemberShip()) {
             return totalCost;
         }

@@ -34,7 +34,7 @@ public class Promotion {
     }
 
     public int calculatePromotionQuantity(int quantity) {
-        if (buy == 0){
+        if (buy == 0) {
             return 0;
         }
         int applicableSets = quantity / buy;
@@ -50,7 +50,7 @@ public class Promotion {
 
         paidQuantity += remainingQuantity;
 
-        return new int[] {paidQuantity, freeQuantity};
+        return new int[]{paidQuantity, freeQuantity};
     }
 
     public String getName() {

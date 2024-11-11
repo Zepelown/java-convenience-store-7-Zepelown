@@ -27,7 +27,7 @@ public class Product {
 
     public Optional<InsufficientBonusProductDto> checkInsufficientBonusPromotionQuantity(int quantity) {
         int promotionQuantity = promotion.calculatePromotionQuantity(quantity);
-        if (isPromotionActive() && promotionQuantity > quantity && promotionQuantity <= stock ) {
+        if (isPromotionActive() && promotionQuantity > quantity && promotionQuantity <= stock) {
             return Optional.of(new InsufficientBonusProductDto(name, (promotionQuantity - quantity)));
 
         }

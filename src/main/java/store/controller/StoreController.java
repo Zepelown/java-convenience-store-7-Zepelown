@@ -3,7 +3,6 @@ package store.controller;
 import store.data.repository.StoreProductRepository;
 import store.data.repository.StorePromotionRepository;
 import store.dto.InsufficientBonusProductDto;
-import store.dto.ProductDto;
 import store.dto.PromotionQuantityOverStockDto;
 import store.exception.ErrorMessage;
 import store.model.*;
@@ -80,7 +79,7 @@ public class StoreController {
         ProductTotalReceipt productTotalReceipt = storeReceiptService.calculateReceipt(purchasedProducts, isMemberShip);
         storeOutputView.printReceipt(productTotalReceipt);
 
-        if (getRetryConfirm()){
+        if (getRetryConfirm()) {
             start();
         }
     }
@@ -161,7 +160,7 @@ public class StoreController {
         }
     }
 
-    private boolean getRetryConfirm(){
+    private boolean getRetryConfirm() {
         while (true) {
             try {
                 String retryConfirm = storeInputView.getRetryConfirm();

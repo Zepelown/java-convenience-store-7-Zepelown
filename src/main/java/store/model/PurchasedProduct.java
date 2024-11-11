@@ -15,24 +15,9 @@ public class PurchasedProduct {
         this.freeQuantity = freeQuantity;
         this.price = price;
         this.promotion = promotion;
-        if (this.promotion  == null){
+        if (this.promotion == null) {
             this.promotion = new Promotion("null", 0, 0, null, null);
         }
-        calculateTotalQuantities();
-    }
-
-    public void minusBuyingQuantity(int quantity) {
-        buyingQuantity -= quantity;
-        calculateTotalQuantities();
-    }
-
-    public void minusFreeQuantity(int quantity) {
-        freeQuantity += quantity;
-        calculateTotalQuantities();
-    }
-
-    public void addFreeQuantity(int quantity) {
-        freeQuantity += quantity;
         calculateTotalQuantities();
     }
 
@@ -51,12 +36,12 @@ public class PurchasedProduct {
         return totalQuantity;
     }
 
-    public void addTotalQuantity(int quantity){
+    public void addTotalQuantity(int quantity) {
         totalQuantity += quantity;
         calculateTotalQuantities();
     }
 
-    public void minusTotalQuantity(int quantity){
+    public void minusTotalQuantity(int quantity) {
         totalQuantity -= quantity;
         calculateTotalQuantities();
     }

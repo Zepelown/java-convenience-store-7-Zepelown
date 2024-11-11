@@ -1,7 +1,6 @@
 package store.model;
 
 import store.exception.ErrorMessage;
-import store.model.PurchaseProduct;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -36,15 +35,16 @@ public class PurchaseProductFactory {
 
     private PurchaseProduct parseProduct(String productString) {
         String[] parts = productString.split("-");
-        if (parts.length != 2){
+        if (parts.length != 2) {
             throw new IllegalArgumentException(ErrorMessage.INVALID_BUYING_PRODUCT_INPUT_FORMAT.getErrorMessage());
         }
         String name = parts[0];
         String quantity = parts[1];
         return new PurchaseProduct(name, quantity);
     }
-    private void checkEmpty(String input){
-        if (input == null || input.isBlank()){
+
+    private void checkEmpty(String input) {
+        if (input == null || input.isBlank()) {
             throw new IllegalArgumentException(ErrorMessage.INVALID_BUYING_PRODUCT_INPUT_FORMAT.getErrorMessage());
         }
     }

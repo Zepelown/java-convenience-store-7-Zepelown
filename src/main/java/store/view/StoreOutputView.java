@@ -4,8 +4,8 @@ import store.model.Product;
 import store.model.Promotion;
 import store.model.receipt.CostReceipt;
 import store.model.receipt.FreeReceipt;
-import store.model.receipt.TotalCostPerProduct;
 import store.model.receipt.ProductTotalReceipt;
+import store.model.receipt.TotalCostPerProduct;
 
 import java.text.DecimalFormat;
 import java.util.HashMap;
@@ -42,7 +42,7 @@ public class StoreOutputView {
         System.out.println(ERROR_MESSAGE_PREFIX + errorMessage);
     }
 
-    public void printReceipt(ProductTotalReceipt totalReceipt){
+    public void printReceipt(ProductTotalReceipt totalReceipt) {
         System.out.println("===========W 편의점=============");
         System.out.println("상품명\t\t수량\t금액");
         printCostReceipt(totalReceipt.getCostReceipt());
@@ -50,27 +50,29 @@ public class StoreOutputView {
         printTotalCost(totalReceipt);
     }
 
-    private void printCostReceipt(CostReceipt costReceipt){
+    private void printCostReceipt(CostReceipt costReceipt) {
         for (Map.Entry<String, TotalCostPerProduct> entry : costReceipt.getProducts().entrySet()) {
             String productName = entry.getKey();
             TotalCostPerProduct totalCostPerProduct = entry.getValue();
-            System.out.println(productName + "\t\t" + totalCostPerProduct.getQuantity()+"\t"+ receiptDecimalFormat.format(totalCostPerProduct.getTotalCost()));
+            System.out.println(productName + "\t\t" + totalCostPerProduct.getQuantity() + "\t" + receiptDecimalFormat.format(totalCostPerProduct.getTotalCost()));
         }
     }
-    private void printFreeReceipt(FreeReceipt freeReceipt){
+
+    private void printFreeReceipt(FreeReceipt freeReceipt) {
         System.out.println("===========증\t정=============");
         for (Map.Entry<String, TotalCostPerProduct> entry : freeReceipt.getProducts().entrySet()) {
             String productName = entry.getKey();
             TotalCostPerProduct totalCostPerProduct = entry.getValue();
-            System.out.println(productName + "\t\t" + totalCostPerProduct.getQuantity()+"\t");
+            System.out.println(productName + "\t\t" + totalCostPerProduct.getQuantity() + "\t");
         }
         System.out.println("==============================");
     }
-    private void printTotalCost(ProductTotalReceipt totalReceipt){
-        System.out.println("총구매액\t\t"+totalReceipt.getTotalQuantity()+"\t"+receiptDecimalFormat.format(totalReceipt.getTotalCost()));
-        System.out.println("행사할인\t\t\t-"+receiptDecimalFormat.format(totalReceipt.getFreeCost()));
-        System.out.println("멤버십할인\t\t\t-"+receiptDecimalFormat.format(totalReceipt.getMemberDiscount()));
-        System.out.println("내실돈\t\t\t"+receiptDecimalFormat.format(totalReceipt.getFinalCost()));
+
+    private void printTotalCost(ProductTotalReceipt totalReceipt) {
+        System.out.println("총구매액\t\t" + totalReceipt.getTotalQuantity() + "\t" + receiptDecimalFormat.format(totalReceipt.getTotalCost()));
+        System.out.println("행사할인\t\t\t-" + receiptDecimalFormat.format(totalReceipt.getFreeCost()));
+        System.out.println("멤버십할인\t\t\t-" + receiptDecimalFormat.format(totalReceipt.getMemberDiscount()));
+        System.out.println("내실돈\t\t\t" + receiptDecimalFormat.format(totalReceipt.getFinalCost()));
     }
 
     private void printProductDetails(List<Product> products, String productName) {
@@ -94,13 +96,13 @@ public class StoreOutputView {
     }
 
     private boolean isPromotionOnly(List<Product> products) {
-        if (products.size() == 1 && products.getFirst().getPromotion().isPromotionApplicable()){
+        if (products.size() == 1 && products.getFirst().getPromotion().isPromotionApplicable()) {
             return true;
         }
         return false;
     }
 
-    private void printEmptyProduct(String productName, int price){
+    private void printEmptyProduct(String productName, int price) {
         StringBuilder result = new StringBuilder();
         result.append("- ").append(productName);
         result.append(" ").append(decimalFormat.format(price));
