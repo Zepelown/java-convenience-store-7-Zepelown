@@ -1,6 +1,5 @@
 package store.data.entity;
 
-import store.dto.ProductDto;
 import store.model.Product;
 import store.model.Promotion;
 import store.util.EntityValidator;
@@ -23,9 +22,6 @@ public class ProductEntity {
         return name;
     }
 
-    public int getPrice() {
-        return price;
-    }
 
     public int getQuantity() {
         return quantity;
@@ -33,10 +29,6 @@ public class ProductEntity {
 
     public String getPromotion() {
         return promotion;
-    }
-
-    public ProductDto toDto() {
-        return new ProductDto(name, price, quantity, promotion);
     }
 
     public Product toProduct(Promotion promotion) {

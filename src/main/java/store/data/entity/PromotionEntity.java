@@ -25,22 +25,6 @@ public class PromotionEntity {
         return name;
     }
 
-    public int getBuy() {
-        return buy;
-    }
-
-    public int getGet() {
-        return get;
-    }
-
-    public LocalDate getStartDate() {
-        return startDate;
-    }
-
-    public LocalDate getEndDate() {
-        return endDate;
-    }
-
     public Promotion toPromotion() {
         return new Promotion(name, buy, get, startDate, endDate);
     }
