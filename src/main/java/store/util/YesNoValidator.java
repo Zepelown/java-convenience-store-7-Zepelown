@@ -4,7 +4,7 @@ import store.exception.ErrorMessage;
 
 public class YesNoValidator {
     public static boolean validateYN(String input) {
-        if (!checkYesOrNoFormat(input)) {
+        if (input == null || !checkYesOrNoFormat(input)) {
             throw new IllegalArgumentException(ErrorMessage.ETC_ERROR.getErrorMessage());
         }
 
@@ -12,7 +12,6 @@ public class YesNoValidator {
     }
 
     private static boolean checkYesOrNoFormat(String input) {
-        // Y 또는 N만 유효한 입력으로 허용
         return input.equals("Y") || input.equals("N");
     }
 }
