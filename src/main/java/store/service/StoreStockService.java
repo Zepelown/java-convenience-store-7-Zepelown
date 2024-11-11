@@ -40,7 +40,7 @@ public class StoreStockService {
         return purchasedProduct;
     }
 
-    public PromotionProductGroup separateProductByPromotion(List<Product> checkedProductStock) {
+    public PromotionProductGroup separatePromotion(List<Product> checkedProductStock) {
         Product promotionProduct = findPromotionProduct(checkedProductStock);
         Product nonPromotionProduct = findNonPromotionProduct(checkedProductStock);
         int totalStock = calculateTotalStock(checkedProductStock);

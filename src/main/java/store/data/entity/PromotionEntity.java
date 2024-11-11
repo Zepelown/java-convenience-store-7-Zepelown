@@ -6,11 +6,11 @@ import store.util.EntityValidator;
 import java.time.LocalDate;
 
 public class PromotionEntity {
-    private String name;
-    private int buy;
-    private int get;
-    private LocalDate startDate;
-    private LocalDate endDate;
+    private final String name;
+    private final int buy;
+    private final int get;
+    private final LocalDate startDate;
+    private final LocalDate endDate;
 
     public PromotionEntity(String name, String buy, String get, String startDate, String endDate) {
         this.name = name;

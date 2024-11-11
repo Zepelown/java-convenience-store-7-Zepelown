@@ -1,7 +1,6 @@
 package store.data.repository;
 
 import store.data.entity.ProductEntity;
-import store.exception.ErrorMessage;
 import store.util.ProductParser;
 
 import java.io.BufferedReader;
@@ -12,7 +11,7 @@ import java.util.stream.Collectors;
 public class StoreProductRepository implements StoreRepository {
     private final String PRODUCT_FILE_NAME = "products.md";
 
-    private List<ProductEntity> productStock;
+    private final List<ProductEntity> productStock;
 
     public StoreProductRepository() throws IOException {
         productStock = loadProductsFromFile();

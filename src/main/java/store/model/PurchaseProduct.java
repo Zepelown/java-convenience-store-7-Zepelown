@@ -5,7 +5,7 @@ import store.util.ModelValidator;
 
 public class PurchaseProduct {
     private final String name;
-    private int quantity;
+    private final int quantity;
 
     public PurchaseProduct(String name, String quantity) {
         this.name = name;

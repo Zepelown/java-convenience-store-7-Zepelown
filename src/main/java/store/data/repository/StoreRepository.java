@@ -7,8 +7,6 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 
 interface StoreRepository {
-    String FILE_DELIMITER = ",";
-
     default BufferedReader createBufferedReader(String fileName) {
         InputStream inputStream = getClass().getClassLoader().getResourceAsStream(fileName);
         if (inputStream == null) {

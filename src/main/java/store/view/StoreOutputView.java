@@ -27,7 +27,7 @@ public class StoreOutputView {
             String productName = entry.getKey();
             List<Product> products = entry.getValue();
 
-            printProductDetails(products, productName);
+            printProductDetails(products);
 
             if (isPromotionOnly(products)) {
                 Product product = products.getFirst();
@@ -72,7 +72,7 @@ public class StoreOutputView {
         System.out.println(ViewConstants.FINAL_COST_PREFIX + receiptDecimalFormat.format(totalReceipt.getFinalCost()));
     }
 
-    private void printProductDetails(List<Product> products, String productName) {
+    private void printProductDetails(List<Product> products) {
         for (Product product : products) {
             printProductDetail(product);
         }

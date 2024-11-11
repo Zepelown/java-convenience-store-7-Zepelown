@@ -5,10 +5,10 @@ import store.model.Promotion;
 import store.util.EntityValidator;
 
 public class ProductEntity {
-    private String name;
-    private int price;
-    private int quantity;
-    private String promotion;
+    private final String name;
+    private final int price;
+    private final int quantity;
+    private final String promotion;
 
     public ProductEntity(String name, String price, String quantity, String promotion) {
         this.name = name;
@@ -20,11 +20,6 @@ public class ProductEntity {
 
     public String getName() {
         return name;
-    }
-
-
-    public int getQuantity() {
-        return quantity;
     }
 
     public String getPromotion() {

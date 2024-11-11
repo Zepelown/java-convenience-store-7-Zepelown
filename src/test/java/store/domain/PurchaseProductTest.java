@@ -32,7 +32,7 @@ public class PurchaseProductTest {
 
     private PromotionProductGroup getPromotionProductGroup(PurchaseProduct purchaseProduct) {
         List<Product> sameProductNameStocks = storeStockService.getSameProductNameStocks(purchaseProduct);
-        return storeStockService.separateProductByPromotion(sameProductNameStocks);
+        return storeStockService.separatePromotion(sameProductNameStocks);
     }
 
     private PurchasedProduct createPurchasedProduct(PurchaseProduct purchaseProduct, PromotionProductGroup promotionProductGroup) {

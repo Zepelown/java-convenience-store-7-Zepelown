@@ -45,12 +45,6 @@ public class PurchasedProduct {
         totalQuantity -= quantity;
         buyingQuantity -= quantity;
     }
-
-    public void minusTotalQuantity(int quantity) {
-        totalQuantity -= quantity;
-        calculateTotalQuantities();
-    }
-
     public String getName() {
         return name;
     }
@@ -61,10 +55,6 @@ public class PurchasedProduct {
 
     public int getPrice() {
         return price;
-    }
-
-    public Promotion getPromotion() {
-        return promotion;
     }
 
     public int getFreeQuantity() {

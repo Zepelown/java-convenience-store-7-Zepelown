@@ -22,10 +22,6 @@ public class TotalReceipt {
         return costReceipt;
     }
 
-    public int getCostQuantity() {
-        return costReceipt.getTotalQuantity();
-    }
-
     public int getTotalQuantity() {
         return costReceipt.totalQuantity + freeReceipt.totalQuantity;
     }
